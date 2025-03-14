@@ -113,7 +113,6 @@
     font-style: normal;
   }
 
-  /* Add Telugu font support with Gautami */
   @font-face {
     font-family: 'Gautami';
     src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap');
@@ -136,6 +135,10 @@
 
   .no-print {
     display: none !important;
+  }
+
+  .hidden-on-web {
+    display: block !important;
   }
 
   @page {
@@ -211,6 +214,11 @@
     word-break: break-word;
     white-space: normal;
   }
+}
+
+/* Hide elements on web but show in print */
+.hidden-on-web {
+  display: none;
 }
 
 /* Custom form styling */

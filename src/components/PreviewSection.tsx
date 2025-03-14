@@ -133,6 +133,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             startDate={startDate}
             startTime={startTime}
             notices={notices}
+            showHeaderOnWeb={false} // Don't show header again in PrintableNotice on web view
           />
         </div>
       </Card>

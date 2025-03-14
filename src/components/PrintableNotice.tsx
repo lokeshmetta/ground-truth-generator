@@ -15,6 +15,7 @@ interface PrintableNoticeProps {
   startDate: string;
   startTime: string;
   notices: NoticeData[];
+  showHeaderOnWeb?: boolean;
 }
 
 const formatTime = (timeString: string): string => {
@@ -48,7 +49,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   villageName,
   startDate,
   startTime,
-  notices
+  notices,
+  showHeaderOnWeb = true
 }) => {
   const formattedTime = formatTime(startTime);
   const formattedDate = formatDate(startDate);
@@ -57,7 +59,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
     <div>
       {notices.map((notice, noticeIndex) => (
         <div key={`notice-${noticeIndex}`} className="khata-group">
-          <div className="telugu-header-print telugu-text">
+          {/* Telugu header - only visible in print view, hidden in web view if showHeaderOnWeb is false */}
+          <div className={`telugu-header-print telugu-text ${!showHeaderOnWeb ? 'hidden-on-web' : ''}`}>
             <h3>ఫారం-19</h3>
             <h3>భూ యాజమాన్య దారులకు నోటీసు</h3>
             <h3>భూ నిజ నిర్దారణ కొరకు</h3>
