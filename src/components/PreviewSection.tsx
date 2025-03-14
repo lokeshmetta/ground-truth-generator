@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   mapping,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const [visibleRows, setVisibleRows] = useState(100);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   if (!show) return null;
 
@@ -92,8 +94,20 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     }];
   }
 
+  useEffect(() => {
+    if (isPrinting) {
+      // Load all rows when printing
+      setVisibleRows(data.length);
+    }
+  }, [isPrinting, data.length]);
+
   const handlePrint = () => {
-    window.print();
+    setIsPrinting(true);
+    setTimeout(() => {
+      window.print();
+      setIsPrinting(false);
+      setVisibleRows(100); // Reset to initial visible rows after printing
+    }, 1000);
   };
 
   return (
@@ -105,71 +119,28 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     >
       <div className="no-print flex justify-between items-center mb-4">
         <h2 className="text-2xl font-medium">Preview</h2>
-        <Button 
-          onClick={handlePrint} 
-          className="flex items-center gap-2"
-        >
-          <Printer className="h-4 w-4" />
-          Print Notices
+        <Button onClick={handlePrint} disabled={isPrinting}>
+          <Printer className="mr-2 h-4 w-4" />
+          {isPrinting ? 'Preparing Print...' : 'Print'}
         </Button>
       </div>
-
-      <Card className="glass-panel print:bg-transparent print:static">
-        {/* Show Telugu header only once on webpage */}
-        <div className="p-6 telugu-text no-print">
-          <h3 className="text-center font-bold">ఫారం-19</h3>
-          <h3 className="text-center font-bold">భూ యాజమాన్య దారులకు నోటీసు</h3>
-          <h3 className="text-center font-bold mb-4">భూ నిజ నిర్దారణ కొరకు</h3>
-          <p className="text-left">
-            1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, {districtName || '____________________'} జిల్లా,
-            {mandalName || '_____________________'} మండలం, {villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-            {startDate ? formatDate(startDate) : '_____________'} తేదీన {startTime ? formatTime(startTime) : '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.<br />
-            2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
-            యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
-            అందించవలసినదిగా తెలియజేయడమైనది.
-          </p>
-        </div>
-        
-        <div className="p-4 print:p-0! print:bg-transparent" ref={printRef}>
-          <PrintableNotice
-            districtName={districtName}
-            mandalName={mandalName}
-            villageName={villageName}
-            startDate={startDate}
-            startTime={startTime}
-            notices={notices}
-            showHeaderOnWeb={false} // Don't show header again in PrintableNotice on web view
-          />
-        </div>
-      </Card>
+      
+      <div ref={printRef}>
+        <PrintableNotice
+          districtName={districtName}
+          mandalName={mandalName}
+          villageName={villageName}
+          startDate={startDate}
+          startTime={startTime}
+          notices={notices.map(notice => ({
+            ...notice,
+            rows: notice.rows.slice(0, isPrinting ? notice.rows.length : visibleRows)
+          }))}
+          showHeaderOnWeb={true}
+        />
+      </div>
     </motion.div>
   );
-};
-
-// Helper functions for date and time formatting
-const formatTime = (timeString: string): string => {
-  if (!timeString) return '';
-  
-  try {
-    const [hours, minutes] = timeString.split(':');
-    const time = new Date();
-    time.setHours(parseInt(hours));
-    time.setMinutes(parseInt(minutes));
-    return time.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-  } catch (error) {
-    return timeString;
-  }
-};
-
-const formatDate = (dateString: string): string => {
-  if (!dateString) return '';
-  
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
-  } catch (error) {
-    return dateString;
-  }
 };
 
 export default PreviewSection;
