@@ -113,7 +113,6 @@
     font-style: normal;
   }
 
-  /* Add Telugu font support with Gautami */
   @font-face {
     font-family: 'Gautami';
     src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap');
@@ -136,6 +135,10 @@
 
   .no-print {
     display: none !important;
+  }
+
+  .hidden-on-web {
+    display: block !important;
   }
 
   @page {
@@ -183,6 +186,23 @@
   .page-footer {
     margin-top: auto;
   }
+  
+  .footer-signature-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .left-column {
+    text-align: left;
+  }
+  
+  .right-column {
+    text-align: right;
+    min-width: 200px;
+  }
 
   .khata-table.print-table col:nth-child(1) {
     width: 100px;
@@ -213,6 +233,11 @@
   }
 }
 
+/* Hide elements on web but show in print */
+.hidden-on-web {
+  display: none;
+}
+
 /* Custom form styling */
 .form-input {
   @apply transition-all duration-200 ease-in-out;
@@ -227,4 +252,22 @@
 /* Telugu text */
 .telugu-text {
   font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
+}
+
+/* Footer layout */
+.footer-signature-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.left-column {
+  text-align: left;
+}
+
+.right-column {
+  text-align: right;
+  min-width: 200px;
 }
