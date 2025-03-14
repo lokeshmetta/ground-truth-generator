@@ -91,20 +91,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     window.print();
   };
 
-  const teluguHeaderContent = `
-    <h3>ఫారం-19</h3>
-    <h3>భూ యాజమాన్య దారులకు నోటీసు</h3>
-    <h3>భూ నిజ నిర్దారణ కొరకు</h3>
-    <p>
-      1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, ${districtName || '____________________'} జిల్లా,
-      ${mandalName || '_____________________'} మండలం, ${villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-      ${startDate || '_____________'} తేదీన ${startTime || '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.<br />
-      2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
-      యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
-      అందించవలసినదిగా తెలియజేయడమైనది.
-    </p>
-  `;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -124,7 +110,20 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       </div>
 
       <Card className="glass-panel">
-        <div className="no-print p-6 telugu-text" dangerouslySetInnerHTML={{ __html: teluguHeaderContent }} />
+        {/* Show Telugu header only once on webpage */}
+        <div className="p-6 telugu-text no-print">
+          <h3 className="text-center font-bold">ఫారం-19</h3>
+          <h3 className="text-center font-bold">భూ యాజమాన్య దారులకు నోటీసు</h3>
+          <h3 className="text-center font-bold mb-4">భూ నిజ నిర్దారణ కొరకు</h3>
+          <p className="text-left">
+            1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, {districtName || '____________________'} జిల్లా,
+            {mandalName || '_____________________'} మండలం, {villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
+            {startDate ? formatDate(startDate) : '_____________'} తేదీన {startTime ? formatTime(startTime) : '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.<br />
+            2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
+            యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
+            అందించవలసినదిగా తెలియజేయడమైనది.
+          </p>
+        </div>
         
         <div className="p-4" ref={printRef}>
           <PrintableNotice
@@ -139,6 +138,32 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       </Card>
     </motion.div>
   );
+};
+
+// Helper functions for date and time formatting
+const formatTime = (timeString: string): string => {
+  if (!timeString) return '';
+  
+  try {
+    const [hours, minutes] = timeString.split(':');
+    const time = new Date();
+    time.setHours(parseInt(hours));
+    time.setMinutes(parseInt(minutes));
+    return time.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+  } catch (error) {
+    return timeString;
+  }
+};
+
+const formatDate = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch (error) {
+    return dateString;
+  }
 };
 
 export default PreviewSection;
