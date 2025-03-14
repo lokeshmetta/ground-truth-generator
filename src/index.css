@@ -1,22 +1,23 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 20% 98%;
+    --foreground: 224 71.4% 4.1%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71.4% 4.1%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 71.4% 4.1%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 212 100% 47%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 210 20% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -32,61 +33,46 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.8rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 212 100% 47%;
+    --primary-foreground: 210 20% 98%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 210 20% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
   }
 }
 
@@ -97,5 +83,149 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  @font-face {
+    font-family: 'SF Pro Display';
+    src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'SF Pro Display';
+    src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.woff2');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'SF Pro Display';
+    src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.woff2');
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'SF Pro Display';
+    src: url('https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff2');
+    font-weight: 700;
+    font-style: normal;
+  }
+}
+
+/* Add Telugu font support */
+@font-face {
+  font-family: 'Noto Sans Telugu';
+  src: url('https://fonts.gstatic.com/s/notosanstelugu/v19/0FlxVOGZlE2Rrtr-HmgkMWJNjJ5_RyT8o8c.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Custom glass morphism */
+.glass-panel {
+  @apply bg-white/80 backdrop-blur-md border border-white/30 shadow-lg;
+}
+
+/* Print-specific styles */
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  @page {
+    margin: 5mm;
+    border: 1px solid black;
+    padding: 8px;
+  }
+
+  .khata-group {
+    page-break-after: always;
+    margin-bottom: 0px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .khata-group:last-child {
+    page-break-after: auto;
+  }
+
+  .telugu-header-print {
+    display: block;
+    text-align: left;
+    margin-bottom: 0px;
+    width: 100%;
+  }
+
+  .telugu-header-print h3 {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .telugu-header-print p {
+    margin: 0px;
+    text-align: left;
+    font-weight: normal;
+  }
+
+  .signature-column {
+    width: 150px;
+  }
+
+  .page-footer {
+    margin-top: auto;
+  }
+
+  .khata-table.print-table col:nth-child(1) {
+    width: 100px;
+    max-width: max-content;
+  }
+
+  .khata-table.print-table col:nth-child(2) {
+    width: 80px;
+  }
+
+  .khata-table.print-table col:nth-child(5) {
+    width: 110px;
+  }
+
+  .khata-table.print-table col:nth-child(3),
+  .khata-table.print-table col:nth-child(4) {
+    width: calc((100% - 450px) / 2);
+  }
+
+  .khata-table.print-table .signature-column {
+    width: 150px !important;
+  }
+
+  .khata-table.print-table td,
+  .khata-table.print-table th {
+    word-break: break-word;
+    white-space: normal;
+  }
+}
+
+/* Custom form styling */
+.form-input {
+  @apply transition-all duration-200 ease-in-out;
+  @apply focus:ring-2 focus:ring-primary/20 focus:border-primary;
+}
+
+/* Custom animations */
+.content-transition {
+  @apply transition-all duration-300 ease-out;
+}
+
+/* Telugu text */
+.telugu-text {
+  font-family: 'Noto Sans Telugu', sans-serif;
 }
