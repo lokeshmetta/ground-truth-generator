@@ -141,10 +141,48 @@
     display: block !important;
   }
 
+  /* Remove button from print view */
+  button, .preview-button {
+    display: none !important;
+  }
+
+  /* Hide toast messages when printing */
+  [role="status"],
+  .toaster,
+  [data-sonner-toaster],
+  [data-radix-toast-viewport],
+  .toast-container {
+    display: none !important;
+  }
+
   @page {
     margin: 5mm;
     border: 1px solid black;
     padding: 8px;
+  }
+
+  /* Fix first page top margin issue */
+  .khata-group:first-of-type {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  /* Add padding after khata-table */
+  .khata-table {
+    margin-bottom: 20px !important;
+    padding-bottom: 10px !important;
+  }
+
+  /* Remove floating effect and background for preview section */
+  .glass-panel, .card, .motion-div {
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    transition: none !important;
   }
 
   .khata-group {
@@ -231,6 +269,18 @@
     word-break: break-word;
     white-space: normal;
   }
+  [class^="mt-8"] {
+    margin: 0rem !important;
+  }
+
+  .p-4{padding: 0rem !important ;}
+
+  .container {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* Hide elements on web but show in print */
@@ -250,7 +300,11 @@
 }
 
 /* Telugu text */
-.telugu-text {
+.telugu-text, .khata-table {
+  font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
+}
+
+.font-gautami {
   font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
 }
 

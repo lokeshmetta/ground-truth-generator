@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface NoticeData {
@@ -26,7 +25,7 @@ const formatTime = (timeString: string): string => {
     const time = new Date();
     time.setHours(parseInt(hours));
     time.setMinutes(parseInt(minutes));
-    return time.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    return time.toLocaleTimeString('en-IN', { hour: 'numeric', minute: 'numeric', hour12: true });
   } catch (error) {
     return timeString;
   }
@@ -37,7 +36,8 @@ const formatDate = (dateString: string): string => {
   
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    // Format as dd-mm-yyyy
+    return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
   } catch (error) {
     return dateString;
   }
@@ -74,34 +74,28 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             </p>
           </div>
 
-          <table className="khata-table print-table border-collapse border border-gray-400">
-            <colgroup>
-              <col />
-              <col />
-              <col />
-              <col />
-              <col />
-              <col className="signature-column" />
-            </colgroup>
+          <table className="w-full border-collapse mt-4 khata-table">
             <thead>
               <tr>
                 {notice.fields.map((field, i) => (
-                  <th key={`header-${i}`} className="telugu-text border border-gray-400 text-center font-bold p-2">
+                  <th key={`header-${i}`} className="border border-black p-2 text-center font-gautami">
                     {field.te}
                   </th>
                 ))}
-                <th className="signature-column telugu-text border border-gray-400 text-center font-bold p-2">సంతకం</th>
+                <th className="border border-black p-2 text-center font-gautami w-[150px]">
+                  సంతకం
+                </th>
               </tr>
             </thead>
             <tbody>
               {notice.rows.map((row, rowIndex) => (
                 <tr key={`row-${rowIndex}`}>
                   {notice.fields.map((field, colIndex) => (
-                    <td key={`cell-${rowIndex}-${colIndex}`} className="border border-gray-400 p-2">
+                    <td key={`cell-${rowIndex}-${colIndex}`} className="border border-black p-2 text-center font-gautami">
                       {row[notice.mapping[field.en]] || ''}
                     </td>
                   ))}
-                  <td className="signature-column border border-gray-400 p-2"></td>
+                  <td className="border border-black p-2 w-[150px] font-gautami">&nbsp;</td>
                 </tr>
               ))}
             </tbody>
@@ -111,7 +105,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             <div className="footer-signature-row">
               <div className="left-column">
                 <p className="body-footer-text telugu-text">స్తలం: {villageName || '_____________'}</p>
-                <p className="body-footer-text telugu-text">తేది: {formattedDate || '_____________'}</p>
+               <br></br> <p className="body-footer-text telugu-text">తేది: {'_____________'}</p>
               </div>
               <div className="right-column">
                 <p className="body-footer-text telugu-text text-right">గ్రామ సర్వేయర్ సంతకం</p>

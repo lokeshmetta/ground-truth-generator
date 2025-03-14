@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -29,23 +28,29 @@ interface MappingTableProps {
   headers: string[];
   show: boolean;
   onMappingSubmit: (mapping: Record<string, string>) => void;
+  onPreview: (mapping: Record<string, string>) => void;
 }
 
-const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSubmit }) => {
+const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSubmit, onPreview }) => {
   const [mappings, setMappings] = useState<Record<string, string>>({});
   const [isComplete, setIsComplete] = useState(false);
 
-  const mappingFields: FieldMapping[] = [
+  const requiredFields: FieldMapping[] = [
     { en: 'Survey No', te: 'సర్వే నెం' },
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
     { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' },
+  ];
+
+  const optionalFields: FieldMapping[] = [
     { en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }
   ];
 
+  const mappingFields = [...requiredFields, ...optionalFields];
+
   useEffect(() => {
-    // Check if all required fields have been mapped
-    const requiredFieldsMapped = mappingFields.every(field => mappings[field.en]);
+    // Check if all required fields (excluding optional ones) have been mapped
+    const requiredFieldsMapped = requiredFields.every(field => mappings[field.en]);
     setIsComplete(requiredFieldsMapped);
   }, [mappings]);
 
@@ -55,6 +60,10 @@ const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSub
 
   const handleSubmit = () => {
     onMappingSubmit(mappings);
+  };
+
+  const handlePreview = () => {
+    onPreview(mappings);
   };
 
   if (!show) return null;
@@ -67,9 +76,9 @@ const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSub
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
-          className="mt-8 no-print"
+          className="mt-8 print:!bg-transparent no-print"
         >
-          <Card className="glass-panel">
+          <Card className="glass-panel print:!bg-transparent print:!shadow-none">
             <CardContent className="pt-6">
               <h2 className="text-2xl font-medium mb-6">Map CSV Columns</h2>
               <div className="overflow-x-auto">
@@ -122,7 +131,8 @@ const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSub
                 </Table>
               </div>
               
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end mt-6 space-x-4">
+                {/* Preview button removed */}
                 <Button 
                   onClick={handleSubmit} 
                   disabled={!isComplete}

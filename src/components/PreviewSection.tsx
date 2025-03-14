@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
@@ -43,13 +42,19 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   });
 
   // Fields to display in the table
-  const fields = [
+  const requiredFields = [
     { en: 'Survey No', te: 'సర్వే నెం' },
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
     { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' },
+  ];
+
+  const optionalFields = [
     { en: 'Mobile Number', te: 'మొబైల్ నెంబరు' },
   ];
+
+  // Always include all fields, both required and optional
+  const fields = [...requiredFields, ...optionalFields];
 
   // Group data by Khata No if it exists in the mapping
   const khataNoField = 'Khata No';
@@ -96,7 +101,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-8"
+      className="mt-8 print:m-0 print:bg-transparent print:static"
     >
       <div className="no-print flex justify-between items-center mb-4">
         <h2 className="text-2xl font-medium">Preview</h2>
@@ -109,7 +114,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         </Button>
       </div>
 
-      <Card className="glass-panel">
+      <Card className="glass-panel print:bg-transparent print:static">
         {/* Show Telugu header only once on webpage */}
         <div className="p-6 telugu-text no-print">
           <h3 className="text-center font-bold">ఫారం-19</h3>
@@ -125,7 +130,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           </p>
         </div>
         
-        <div className="p-4" ref={printRef}>
+        <div className="p-4 print:p-0! print:bg-transparent" ref={printRef}>
           <PrintableNotice
             districtName={districtName}
             mandalName={mandalName}
@@ -161,7 +166,7 @@ const formatDate = (dateString: string): string => {
   
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
   } catch (error) {
     return dateString;
   }

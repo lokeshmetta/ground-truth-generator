@@ -56,7 +56,7 @@ const Index: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <Header />
         
-        <div className="mt-8 space-y-8">
+        <div className="mt-8 space-y-8 print:m-0">
           <FormSection
             onFileUpload={handleFileUpload}
             districtName={districtName}
