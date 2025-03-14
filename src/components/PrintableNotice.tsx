@@ -108,13 +108,13 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
           </table>
 
           <div className="page-footer">
-            <div className="footer-row">
+            <div className="footer-signature-row">
               <div className="left-column">
                 <p className="body-footer-text telugu-text">స్తలం: {villageName || '_____________'}</p>
                 <p className="body-footer-text telugu-text">తేది: {formattedDate || '_____________'}</p>
               </div>
               <div className="right-column">
-                <p className="body-footer-text telugu-text">గ్రామ సర్వేయర్ సంతకం</p>
+                <p className="body-footer-text telugu-text text-right">గ్రామ సర్వేయర్ సంతకం</p>
               </div>
             </div>
           </div>

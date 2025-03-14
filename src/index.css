@@ -186,6 +186,23 @@
   .page-footer {
     margin-top: auto;
   }
+  
+  .footer-signature-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .left-column {
+    text-align: left;
+  }
+  
+  .right-column {
+    text-align: right;
+    min-width: 200px;
+  }
 
   .khata-table.print-table col:nth-child(1) {
     width: 100px;
@@ -235,4 +252,22 @@
 /* Telugu text */
 .telugu-text {
   font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
+}
+
+/* Footer layout */
+.footer-signature-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.left-column {
+  text-align: left;
+}
+
+.right-column {
+  text-align: right;
+  min-width: 200px;
 }
