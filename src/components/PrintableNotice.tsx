@@ -71,7 +71,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             </p>
           </div>
 
-          <table className="khata-table print-table">
+          <table className="khata-table print-table border-collapse border border-gray-400">
             <colgroup>
               <col />
               <col />
@@ -83,20 +83,22 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             <thead>
               <tr>
                 {notice.fields.map((field, i) => (
-                  <th key={`header-${i}`} className="telugu-text">{field.te}</th>
+                  <th key={`header-${i}`} className="telugu-text border border-gray-400 text-center font-bold p-2">
+                    {field.te}
+                  </th>
                 ))}
-                <th className="signature-column telugu-text">సంతకం</th>
+                <th className="signature-column telugu-text border border-gray-400 text-center font-bold p-2">సంతకం</th>
               </tr>
             </thead>
             <tbody>
               {notice.rows.map((row, rowIndex) => (
                 <tr key={`row-${rowIndex}`}>
                   {notice.fields.map((field, colIndex) => (
-                    <td key={`cell-${rowIndex}-${colIndex}`}>
+                    <td key={`cell-${rowIndex}-${colIndex}`} className="border border-gray-400 p-2">
                       {row[notice.mapping[field.en]] || ''}
                     </td>
                   ))}
-                  <td className="signature-column"></td>
+                  <td className="signature-column border border-gray-400 p-2"></td>
                 </tr>
               ))}
             </tbody>

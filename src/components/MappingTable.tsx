@@ -73,13 +73,13 @@ const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSub
             <CardContent className="pt-6">
               <h2 className="text-2xl font-medium mb-6">Map CSV Columns</h2>
               <div className="overflow-x-auto">
-                <Table>
+                <Table className="border-collapse border border-gray-300">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Field Name</TableHead>
-                      <TableHead>Telugu Field Name</TableHead>
-                      <TableHead>CSV Column</TableHead>
-                      <TableHead className="w-16">Status</TableHead>
+                      <TableHead className="border border-gray-300 text-center font-bold">Field Name</TableHead>
+                      <TableHead className="border border-gray-300 text-center font-bold">Telugu Field Name</TableHead>
+                      <TableHead className="border border-gray-300 text-center font-bold">CSV Column</TableHead>
+                      <TableHead className="w-16 border border-gray-300 text-center font-bold">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -90,9 +90,9 @@ const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSub
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
-                        <TableCell className="font-medium">{field.en}</TableCell>
-                        <TableCell className="telugu-text">{field.te}</TableCell>
-                        <TableCell>
+                        <TableCell className="font-medium border border-gray-300">{field.en}</TableCell>
+                        <TableCell className="telugu-text border border-gray-300">{field.te}</TableCell>
+                        <TableCell className="border border-gray-300">
                           <Select
                             value={mappings[field.en] || ''}
                             onValueChange={(value) => handleMappingChange(field.en, value)}
@@ -109,11 +109,11 @@ const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSub
                             </SelectContent>
                           </Select>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="border border-gray-300 text-center">
                           {mappings[field.en] ? (
-                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                            <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto" />
                           ) : (
-                            <div className="h-5 w-5 rounded-full border border-gray-300" />
+                            <div className="h-5 w-5 rounded-full border border-gray-300 mx-auto" />
                           )}
                         </TableCell>
                       </motion.tr>

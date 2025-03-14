@@ -55,7 +55,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   const khataNoField = 'Khata No';
   const hasKhataNo = khataNoField in indexMapping;
   
-  let notices: { khataNo: string; rows: string[][] }[] = [];
+  let notices: {
+    khataNo: string;
+    rows: string[][];
+    mapping: Record<string, number>;
+    fields: { en: string; te: string }[];
+  }[] = [];
   
   if (hasKhataNo) {
     const khataGroups: Record<string, string[][]> = {};
