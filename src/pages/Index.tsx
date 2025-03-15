@@ -75,6 +75,7 @@ const Index: React.FC = () => {
             headers={headers}
             show={showMapping}
             onMappingSubmit={handleMappingSubmit}
+            onPreview={() => setShowPreview(true)}
           />
           
           <PreviewSection
