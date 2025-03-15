@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
@@ -7,6 +6,7 @@ import { Printer, Download } from 'lucide-react';
 import PrintableNotice from './PrintableNotice';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { toast } from '@/components/ui/use-toast';
 
 interface PreviewSectionProps {
   districtName: string;
@@ -35,7 +35,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
   if (!show) return null;
 
-  // Create mapping of field names to indices
   const indexMapping: Record<string, number> = {};
   Object.entries(mapping).forEach(([fieldName, csvHeader]) => {
     const headerIndex = headers.indexOf(csvHeader);
@@ -44,7 +43,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     }
   });
 
-  // Fields to display in the table
   const requiredFields = [
     { en: 'Survey No', te: 'సర్వే నెం' },
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
@@ -56,12 +54,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     { en: 'Mobile Number', te: 'మొబైల్ నెంబరు' },
   ];
 
-  // Always include all fields, both required and optional
   const fields = [...requiredFields, ...optionalFields];
 
-  // Group data by Khata No if it exists in the mapping
-  const khataNoField = 'Khata No';
-  const hasKhataNo = khataNoField in indexMapping;
+  const hasKhataNo = 'Khata No' in indexMapping;
   
   let notices: {
     khataNo: string;
@@ -73,7 +68,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   if (hasKhataNo) {
     const khataGroups: Record<string, string[][]> = {};
     data.forEach(row => {
-      const khataNo = row[indexMapping[khataNoField]] || 'Unknown';
+      const khataNo = row[indexMapping['Khata No']] || 'Unknown';
       if (!khataGroups[khataNo]) {
         khataGroups[khataNo] = [];
       }
@@ -120,7 +115,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         const pageHeight = 295; // A4 height in mm
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         
-        // Add new page for each notice except the first one
         if (i > 0) {
           pdf.addPage();
         }
@@ -130,7 +124,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       
       pdf.save(`land-notices-${villageName || 'village'}.pdf`);
       
-      // Show success toast
       toast({
         title: "PDF Downloaded Successfully",
         description: "Land notices have been saved to your device.",
@@ -174,7 +167,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       </div>
 
       <Card className="glass-panel print:bg-transparent print:static">
-        {/* Show Telugu header only once on webpage */}
         <div className="p-6 telugu-text no-print">
           <h3 className="text-center font-bold">ఫారం-19</h3>
           <h3 className="text-center font-bold">భూ యాజమాన్య దారులకు నోటీసు</h3>
@@ -197,7 +189,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             startDate={startDate}
             startTime={startTime}
             notices={notices}
-            showHeaderOnWeb={false} // Don't show header again in PrintableNotice on web view
+            showHeaderOnWeb={false}
           />
         </div>
       </Card>
@@ -205,7 +197,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   );
 };
 
-// Helper functions for date and time formatting
 const formatTime = (timeString: string): string => {
   if (!timeString) return '';
   
