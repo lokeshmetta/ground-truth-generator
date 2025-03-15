@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -260,6 +261,40 @@
   display: none;
 }
 
+/* PDF-specific styles - similar to print styles but applied when generating PDF */
+.pdf-page {
+  page-break-after: always;
+  margin-bottom: 0px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: white !important;
+}
+
+.pdf-page:last-child {
+  page-break-after: auto;
+}
+
+.pdf-page .telugu-header-print {
+  display: block !important;
+  text-align: left;
+  margin-bottom: 0px;
+  width: 100%;
+}
+
+.pdf-page .telugu-header-print h3 {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.pdf-page .telugu-header-print p {
+  margin: 0px;
+  text-align: left;
+  font-weight: normal;
+}
+
 /* Custom form styling */
 .form-input {
   @apply transition-all duration-200 ease-in-out;
@@ -296,4 +331,17 @@
 .right-column {
   text-align: right;
   min-width: 200px;
+}
+
+/* Additional styles for PDF export */
+.khata-table th, .khata-table td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+.khata-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }

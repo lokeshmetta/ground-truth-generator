@@ -1,3 +1,4 @@
+
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
@@ -94,20 +95,64 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     window.print();
   };
 
+  const prepareForPDF = () => {
+    if (!printRef.current) return;
+    
+    // Clone the printRef content for PDF preparation
+    const pdfContent = printRef.current.cloneNode(true) as HTMLElement;
+    
+    // Add print-specific classes to make it look like print mode
+    const noticeElements = pdfContent.querySelectorAll('.khata-group');
+    noticeElements.forEach(notice => {
+      // Show the Telugu header in the PDF
+      const headerElement = notice.querySelector('.telugu-header-print');
+      if (headerElement) {
+        headerElement.classList.remove('hidden-on-web');
+      }
+    });
+    
+    // Create a temporary container to append our clone to
+    const tempContainer = document.createElement('div');
+    tempContainer.appendChild(pdfContent);
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.width = '210mm'; // A4 width
+    document.body.appendChild(tempContainer);
+    
+    return { tempContainer, pdfContent };
+  };
+
   const handleDownload = async () => {
     if (!printRef.current) return;
     
     try {
       const pdf = new jsPDF('p', 'mm', 'a4');
-      const elements = printRef.current.querySelectorAll('.khata-group');
       
+      // Create temporary elements that look like the print version
+      const { tempContainer, pdfContent } = prepareForPDF() || {};
+      if (!tempContainer || !pdfContent) return;
+
+      const elements = pdfContent.querySelectorAll('.khata-group');
+
       for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
-        const canvas = await html2canvas(element as HTMLElement, {
+        const element = elements[i] as HTMLElement;
+        
+        // Show header for each PDF page
+        const headerElement = element.querySelector('.telugu-header-print');
+        if (headerElement) {
+          headerElement.classList.remove('hidden-on-web');
+          (headerElement as HTMLElement).style.display = 'block';
+        }
+        
+        // Apply print-specific styling
+        element.classList.add('pdf-page');
+        
+        const canvas = await html2canvas(element, {
           scale: 2,
           logging: false,
           useCORS: true,
           allowTaint: true,
+          backgroundColor: 'white',
         });
         
         const imgData = canvas.toDataURL('image/png');
@@ -121,6 +166,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       }
+      
+      // Clean up the temporary elements
+      document.body.removeChild(tempContainer);
       
       pdf.save(`land-notices-${villageName || 'village'}.pdf`);
       
