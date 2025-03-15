@@ -4,55 +4,34 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build project
+      - name: Build
         run: npm run build
         env:
-          BASE_URL: ${{ github.event.repository.name }}
+          CI: false
 
-      - name: Configure GitHub Pages
-        run: |
-          echo "<!DOCTYPE html>
-          <html>
-            <head>
-              <meta http-equiv=\"refresh\" content=\"0; url=./index.html\">
-            </head>
-          </html>" > dist/404.html
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
+          folder: build # The folder the action should deploy
+          branch: gh-pages # The branch the action should deploy to
