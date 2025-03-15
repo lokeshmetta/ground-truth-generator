@@ -20,8 +20,11 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['SF Pro Display', 'system-ui', 'sans-serif'],
+				sans: ['Montserrat', 'Roboto', 'Poppins', 'system-ui', 'sans-serif'],
 				serif: ['Georgia', 'serif'],
+				montserrat: ['Montserrat', 'system-ui', 'sans-serif'],
+				roboto: ['Roboto', 'system-ui', 'sans-serif'],
+				poppins: ['Poppins', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
