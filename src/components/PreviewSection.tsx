@@ -1,9 +1,12 @@
+
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Printer } from 'lucide-react';
+import { Printer, Download } from 'lucide-react';
 import PrintableNotice from './PrintableNotice';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface PreviewSectionProps {
   districtName: string;
@@ -96,6 +99,52 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     window.print();
   };
 
+  const handleDownload = async () => {
+    if (!printRef.current) return;
+    
+    try {
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const elements = printRef.current.querySelectorAll('.khata-group');
+      
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        const canvas = await html2canvas(element as HTMLElement, {
+          scale: 2,
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Add new page for each notice except the first one
+        if (i > 0) {
+          pdf.addPage();
+        }
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      }
+      
+      pdf.save(`land-notices-${villageName || 'village'}.pdf`);
+      
+      // Show success toast
+      toast({
+        title: "PDF Downloaded Successfully",
+        description: "Land notices have been saved to your device.",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "PDF Generation Failed",
+        description: "There was an error creating the PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -105,13 +154,23 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     >
       <div className="no-print flex justify-between items-center mb-4">
         <h2 className="text-2xl font-medium">Preview</h2>
-        <Button 
-          onClick={handlePrint} 
-          className="flex items-center gap-2"
-        >
-          <Printer className="h-4 w-4" />
-          Print Notices
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            onClick={handleDownload}
+            className="flex items-center gap-2"
+            variant="secondary"
+          >
+            <Download className="h-4 w-4" />
+            Download PDF
+          </Button>
+          <Button 
+            onClick={handlePrint} 
+            className="flex items-center gap-2"
+          >
+            <Printer className="h-4 w-4" />
+            Print Notices
+          </Button>
+        </div>
       </div>
 
       <Card className="glass-panel print:bg-transparent print:static">
