@@ -3,13 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://lokeshmetta.github.io/ground-truth-generator",
   "scripts": {
     "dev": "vite",
-    "build": "react-scripts build",
+    "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "homepage": "https://lokeshmetta.github.io/ground-truth-generator"
+    "preview": "vite preview"
   },
   
   "dependencies": {
