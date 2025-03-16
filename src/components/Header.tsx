@@ -16,7 +16,7 @@ const Header: React.FC = () => {
         transition={{ delay: 0.2, duration: 0.6 }}
       >
       <div className="print:hidden">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-red-900">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-blue-900">
           Ground Truthing Notice Generation(Private Lands)
         </h1>
         <p className="mt-3 text-lg text-gray-600 max-w-2xl">
