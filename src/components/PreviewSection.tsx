@@ -362,7 +362,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         <div className="flex gap-3">
           <Button 
             onClick={handleDownloadWord}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white  py-2 px-4 rounded"
             variant="secondary"
           >
             <Download className="h-4 w-4" />
