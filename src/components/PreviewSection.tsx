@@ -121,94 +121,77 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
   const handleDownload = async () => {
     try {
-      // Create PDF with text support
-      const pdf = new jsPDF({
+      const formattedDate = formatDate(startDate);
+      const formattedTime = formatTime(startTime);
+      
+      // Create a document in the given language
+      const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
       });
       
-      // Add custom Telugu font if needed
-      // pdf.addFont('path-to-telugu-font.ttf', 'Telugu', 'normal');
-      // pdf.setFont('Telugu');
-      
-      const formattedDate = formatDate(startDate);
-      const formattedTime = formatTime(startTime);
-      
-      // Generate each notice as a separate page with text
+      // Generate each notice as a separate page
       notices.forEach((notice, pageIndex) => {
         if (pageIndex > 0) {
-          pdf.addPage();
+          doc.addPage();
         }
         
-        // Add header
-        pdf.setFontSize(14);
-        pdf.text('ఫారం-19', pdf.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
-        pdf.text('భూ యాజమాన్య దారులకు నోటీసు', pdf.internal.pageSize.getWidth() / 2, 22, { align: 'center' });
-        pdf.text('భూ నిజ నిర్దారణ కొరకు', pdf.internal.pageSize.getWidth() / 2, 29, { align: 'center' });
+        // Create the content as HTML to better handle Telugu text
+        let pageContent = `
+        <div style="font-family: Arial Unicode MS, sans-serif; text-align: center; margin-bottom: 10px; font-size: 14px;">
+          <div style="font-weight: bold;">ఫారం-19</div>
+          <div style="font-weight: bold;">భూ యాజమాన్య దారులకు నోటీసు</div>
+          <div style="font-weight: bold;">భూ నిజ నిర్దారణ కొరకు</div>
+        </div>
+        <div style="font-family: Arial Unicode MS, sans-serif; text-align: left; margin-bottom: 15px; font-size: 12px;">
+          <p>1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, ${districtName || '____________________'} జిల్లా, ${mandalName || '_____________________'} మండలం, ${villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు ${formattedDate || '_____________'} తేదీన ${formattedTime || '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
+          <p>2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు అందించవలసినదిగా తెలియజేయడమైనది.</p>
+        </div>
         
-        // Add notice text
-        pdf.setFontSize(10);
-        const noticeText1 = `1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, ${districtName || '____________________'} జిల్లా, ${mandalName || '_____________________'} మండలం, ${villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు ${formattedDate || '_____________'} తేదీన ${formattedTime || '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.`;
-        const noticeText2 = `2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు అందించవలసినదిగా తెలియజేయడమైనది.`;
+        <table style="width: 100%; border-collapse: collapse; font-family: Arial Unicode MS, sans-serif; font-size: 11px;">
+          <tr>
+            ${notice.fields.map(field => `<th style="border: 1px solid black; padding: 6px; text-align: center;">${field.te}</th>`).join('')}
+            <th style="border: 1px solid black; padding: 6px; text-align: center;">సంతకం</th>
+          </tr>
+          ${notice.rows.map(row => `
+            <tr>
+              ${notice.fields.map(field => `<td style="border: 1px solid black; padding: 6px; text-align: center;">${row[notice.mapping[field.en]] || ''}</td>`).join('')}
+              <td style="border: 1px solid black; padding: 6px;">&nbsp;</td>
+            </tr>
+          `).join('')}
+        </table>
         
-        pdf.text(noticeText1, 10, 40, {
-          maxWidth: 190,
-          lineHeightFactor: 1.5
+        <div style="font-family: Arial Unicode MS, sans-serif; margin-top: 15px; font-size: 12px;">
+          <div style="float: left; text-align: left;">
+            <p>స్తలం: ${villageName || '_____________'}</p>
+            <p>తేది: _____________</p>
+          </div>
+          <div style="float: right; text-align: right;">
+            <p>గ్రామ సర్వేయర్ సంతకం</p>
+          </div>
+        </div>
+        `;
+        
+        // Add the HTML content to the PDF
+        doc.html(pageContent, {
+          callback: function() {
+            // The page is rendered
+            if (pageIndex === notices.length - 1) {
+              // If this is the last page, save the document
+              doc.save(`land-notices-${villageName || 'village'}.pdf`);
+              
+              toast({
+                title: "PDF Downloaded Successfully",
+                description: "Land notices have been saved to your device.",
+              });
+            }
+          },
+          x: 10,
+          y: 10,
+          width: 190,
+          windowWidth: 800
         });
-        
-        pdf.text(noticeText2, 10, 65, {
-          maxWidth: 190,
-          lineHeightFactor: 1.5
-        });
-        
-        // Create table headers
-        const startY = 90;
-        const lineHeight = 10;
-        const colWidths = [30, 30, 45, 45, 30, 20]; // Adjust column widths as needed
-        let currentY = startY;
-        
-        // Draw table headers
-        let currentX = 10;
-        notice.fields.forEach((field, colIndex) => {
-          pdf.rect(currentX, currentY, colWidths[colIndex], lineHeight);
-          pdf.text(field.te, currentX + colWidths[colIndex]/2, currentY + lineHeight/2, { align: 'center' });
-          currentX += colWidths[colIndex];
-        });
-        
-        // Add signature column
-        pdf.rect(currentX, currentY, colWidths[5], lineHeight);
-        pdf.text('సంతకం', currentX + colWidths[5]/2, currentY + lineHeight/2, { align: 'center' });
-        
-        // Draw table rows
-        currentY += lineHeight;
-        notice.rows.forEach((row, rowIndex) => {
-          currentX = 10;
-          notice.fields.forEach((field, colIndex) => {
-            pdf.rect(currentX, currentY, colWidths[colIndex], lineHeight);
-            const cellText = row[notice.mapping[field.en]] || '';
-            pdf.text(cellText, currentX + colWidths[colIndex]/2, currentY + lineHeight/2, { align: 'center' });
-            currentX += colWidths[colIndex];
-          });
-          
-          // Add empty signature cell
-          pdf.rect(currentX, currentY, colWidths[5], lineHeight);
-          
-          currentY += lineHeight;
-        });
-        
-        // Add footer
-        const footerY = pdf.internal.pageSize.getHeight() - 25;
-        pdf.text(`స్తలం: ${villageName || '_____________'}`, 15, footerY);
-        pdf.text(`తేది: ${'_____________'}`, 15, footerY + 10);
-        pdf.text('గ్రామ సర్వేయర్ సంతకం', pdf.internal.pageSize.getWidth() - 15, footerY + 10, { align: 'right' });
-      });
-      
-      pdf.save(`land-notices-${villageName || 'village'}.pdf`);
-      
-      toast({
-        title: "PDF Downloaded Successfully",
-        description: "Land notices have been saved to your device as text-based PDF.",
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
