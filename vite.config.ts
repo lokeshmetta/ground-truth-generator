@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     allowedHosts: ["75ec9b7d-166c-4bfc-9c9d-e5b6d36c9b8b.lovableproject.com"],
   },
+  base: '/vite-deploy-demo/',
   plugins: [
     react(),
     mode === 'development' &&
