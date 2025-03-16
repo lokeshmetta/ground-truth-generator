@@ -56,7 +56,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   const formattedDate = formatDate(startDate);
 
   return (
-    <div>
+    <div className="ground-truth-notice">
       {notices.map((notice, noticeIndex) => (
         <div key={`notice-${noticeIndex}`} className="khata-group">
           {/* Telugu header - only visible in print view, hidden in web view if showHeaderOnWeb is false */}
