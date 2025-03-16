@@ -22,17 +22,6 @@ jobs:
 
       - name: Build project
         run: npm run build
-        env:
-          BASE_URL: ${{ github.event.repository.name }}
-
-      - name: Configure GitHub Pages
-        run: |
-          echo "<!DOCTYPE html>
-          <html>
-            <head>
-              <meta http-equiv=\"refresh\" content=\"0; url=./index.html\">
-            </head>
-          </html>" > dist/404.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
