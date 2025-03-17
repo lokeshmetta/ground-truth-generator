@@ -5,6 +5,8 @@ import FormSection from '@/components/FormSection';
 import MappingTable from '@/components/MappingTable';
 import PreviewSection from '@/components/PreviewSection';
 import { toast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+import { Printer } from 'lucide-react';
 
 const Index: React.FC = () => {
   // Form state
@@ -43,6 +45,10 @@ const Index: React.FC = () => {
       title: "Column Mapping Complete",
       description: "Preview generated. You can now print the notices.",
     });
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -90,6 +96,18 @@ const Index: React.FC = () => {
           />
         </div>
       </div>
+
+      {showPreview && (
+        <div className="fixed bottom-6 right-6 print:hidden z-50">
+          <Button 
+            onClick={handlePrint} 
+            className="flex items-center gap-2 shadow-lg bg-primary hover:bg-primary/90 text-white rounded-full w-14 h-14 justify-center"
+            size="icon"
+          >
+            <Printer className="h-6 w-6" />
+          </Button>
+        </div>
+      )}
     </motion.div>
   );
 };
