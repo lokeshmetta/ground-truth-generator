@@ -355,14 +355,14 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-8 print:m-0 print:bg-transparent print:static"
+      className="mt-8 print:m-0 print:bg-transparent print:static preview-section"
     >
       <div className="no-print flex justify-between items-center mb-4">
         <h2 className="text-2xl font-medium">Preview</h2>
         <div className="flex gap-3">
           <Button 
             onClick={handleDownloadWord}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white  py-2 px-4 rounded"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded"
             variant="secondary"
           >
             <Download className="h-4 w-4" />
@@ -378,7 +378,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         </div>
       </div>
 
-      <Card className="glass-panel print:bg-transparent print:static">
+      <Card className="glass-panel print:bg-transparent print:static w-full">
         <div className="p-6 telugu-text no-print">
           <h3 className="text-center font-bold">ఫారం-19</h3>
           <h3 className="text-center font-bold">భూ యాజమాన్య దారులకు నోటీసు</h3>
@@ -393,7 +393,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           </p>
         </div>
         
-        <div className="p-4 print:p-0! print:bg-transparent" ref={printRef}>
+        <div className="p-4 print:p-0! print:bg-transparent w-full" ref={printRef}>
           <PrintableNotice
             districtName={districtName}
             mandalName={mandalName}

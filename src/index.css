@@ -83,6 +83,7 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
   }
 
   @font-face {
@@ -96,6 +97,21 @@
 /* Custom glass morphism */
 .glass-panel {
   @apply bg-white/80 backdrop-blur-md border border-white/30 shadow-lg;
+}
+
+/* Container fix for preview */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Preview section specific fixes */
+.preview-section {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Print-specific styles */
@@ -272,40 +288,6 @@
 .hidden-on-web {
   display: none;
 }
-
-/* PDF-specific styles - similar to print styles but applied when generating PDF */
-/* .pdf-page {
-  page-break-after: always;
-  margin-bottom: 0px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: white !important;
-}
-
-.pdf-page:last-child {
-  page-break-after: auto;
-}
-
-.pdf-page .telugu-header-print {
-  display: block !important;
-  text-align: left;
-  margin-bottom: 0px;
-  width: 100%;
-}
-
-.pdf-page .telugu-header-print h3 {
-  margin-top: 10px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.pdf-page .telugu-header-print p {
-  margin: 0px;
-  text-align: left;
-  font-weight: normal;
-} */
 
 /* Custom form styling */
 .form-input {

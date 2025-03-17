@@ -51,12 +51,12 @@ const Index: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-b from-background to-secondary/20"
+      className="min-h-screen bg-gradient-to-b from-background to-secondary/20 overflow-x-hidden"
     >
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
         <Header />
         
-        <div className="mt-8 space-y-8 print:m-0">
+        <div className="mt-8 space-y-8 print:m-0 w-full">
           <FormSection
             onFileUpload={handleFileUpload}
             districtName={districtName}
