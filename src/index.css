@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -78,12 +79,15 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
   body {
     @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
   }
 
   @font-face {
@@ -97,6 +101,7 @@
 /* Custom glass morphism */
 .glass-panel {
   @apply bg-white/80 backdrop-blur-md border border-white/30 shadow-lg;
+  max-width: 100%;
 }
 
 /* Container fix for preview */
@@ -105,6 +110,7 @@
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Preview section specific fixes */
@@ -112,6 +118,34 @@
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+}
+
+/* Set max width on tables to prevent overflow */
+table {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Mobile specific fixes */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    width: 100%;
+  }
+
+  .khata-table th,
+  .khata-table td {
+    padding: 4px;
+    font-size: 0.85rem;
+  }
+
+  .khata-table {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
 }
 
 /* Print-specific styles */

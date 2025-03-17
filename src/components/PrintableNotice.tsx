@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface NoticeData {
@@ -56,9 +57,9 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   const formattedDate = formatDate(startDate);
 
   return (
-    <div className="ground-truth-notice">
+    <div className="ground-truth-notice w-full max-w-full overflow-hidden">
       {notices.map((notice, noticeIndex) => (
-        <div key={`notice-${noticeIndex}`} className="khata-group">
+        <div key={`notice-${noticeIndex}`} className="khata-group w-full">
           {/* Telugu header - only visible in print view, hidden in web view if showHeaderOnWeb is false */}
           <div className={`telugu-header-print telugu-text ${!showHeaderOnWeb ? 'hidden-on-web' : ''}`}>
             <h3>ఫారం-19</h3>
@@ -74,32 +75,34 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             </p>
           </div>
 
-          <table className="w-full border-collapse mt-4 khata-table">
-            <thead>
-              <tr>
-                {notice.fields.map((field, i) => (
-                  <th key={`header-${i}`} className="border border-black p-2 text-center font-gautami">
-                    {field.te}
-                  </th>
-                ))}
-                <th className="border border-black p-2 text-center font-gautami w-[150px]">
-                  సంతకం
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {notice.rows.map((row, rowIndex) => (
-                <tr key={`row-${rowIndex}`}>
-                  {notice.fields.map((field, colIndex) => (
-                    <td key={`cell-${rowIndex}-${colIndex}`} className="border border-black p-2 text-center font-gautami">
-                      {row[notice.mapping[field.en]] || ''}
-                    </td>
+          <div className="table-container w-full overflow-x-auto">
+            <table className="w-full border-collapse mt-4 khata-table">
+              <thead>
+                <tr>
+                  {notice.fields.map((field, i) => (
+                    <th key={`header-${i}`} className="border border-black p-2 text-center font-gautami">
+                      {field.te}
+                    </th>
                   ))}
-                  <td className="border border-black p-2 w-[150px] font-gautami">&nbsp;</td>
+                  <th className="border border-black p-2 text-center font-gautami w-[150px]">
+                    సంతకం
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {notice.rows.map((row, rowIndex) => (
+                  <tr key={`row-${rowIndex}`}>
+                    {notice.fields.map((field, colIndex) => (
+                      <td key={`cell-${rowIndex}-${colIndex}`} className="border border-black p-2 text-center font-gautami">
+                        {row[notice.mapping[field.en]] || ''}
+                      </td>
+                    ))}
+                    <td className="border border-black p-2 w-[150px] font-gautami">&nbsp;</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <div className="page-footer">
             <div className="footer-signature-row">
