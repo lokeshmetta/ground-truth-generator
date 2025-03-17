@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
@@ -51,12 +50,12 @@ const Index: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-b from-background to-secondary/20 overflow-x-hidden w-full"
+      className="min-h-screen bg-gradient-to-b from-background to-secondary/20 overflow-hidden w-full"
     >
-      <div className="container mx-auto px-4 py-8 max-w-6xl w-full">
+      <div className="container mx-auto px-2 sm:px-4 py-8 max-w-6xl w-full overflow-hidden">
         <Header />
         
-        <div className="mt-8 space-y-8 print:m-0 w-full">
+        <div className="mt-8 space-y-8 print:m-0 w-full overflow-hidden">
           <FormSection
             onFileUpload={handleFileUpload}
             districtName={districtName}

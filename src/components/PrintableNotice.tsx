@@ -75,8 +75,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             </p>
           </div>
 
-          <div className="table-container w-full overflow-x-auto">
-            <table className="w-full border-collapse mt-4 khata-table">
+          <div className="table-container w-full">
+            <table className="w-full border-collapse mt-4 khata-table table-fixed">
               <thead>
                 <tr>
                   {notice.fields.map((field, i) => (
@@ -84,7 +84,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                       {field.te}
                     </th>
                   ))}
-                  <th className="border border-black p-2 text-center font-gautami w-[150px]">
+                  <th className="border border-black p-2 text-center font-gautami signature-col">
                     సంతకం
                   </th>
                 </tr>
@@ -97,7 +97,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                         {row[notice.mapping[field.en]] || ''}
                       </td>
                     ))}
-                    <td className="border border-black p-2 w-[150px] font-gautami">&nbsp;</td>
+                    <td className="border border-black p-2 signature-col font-gautami">&nbsp;</td>
                   </tr>
                 ))}
               </tbody>

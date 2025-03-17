@@ -355,31 +355,33 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-8 print:m-0 print:bg-transparent print:static preview-section"
+      className="mt-8 print:m-0 print:bg-transparent print:static preview-section overflow-hidden"
     >
-      <div className="no-print flex justify-between items-center mb-4">
+      <div className="no-print flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-2xl font-medium">Preview</h2>
         <div className="flex gap-3">
           <Button 
             onClick={handleDownloadWord}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded"
             variant="secondary"
+            size="sm"
           >
             <Download className="h-4 w-4" />
-            Download Word Doc
+            Download Word
           </Button>
           <Button 
             onClick={handlePrint} 
             className="flex items-center gap-2"
+            size="sm"
           >
             <Printer className="h-4 w-4" />
-            Print Notices
+            Print
           </Button>
         </div>
       </div>
 
-      <Card className="glass-panel print:bg-transparent print:static w-full">
-        <div className="p-6 telugu-text no-print">
+      <Card className="glass-panel print:bg-transparent print:static w-full overflow-hidden">
+        <div className="p-4 sm:p-6 telugu-text no-print overflow-hidden">
           <h3 className="text-center font-bold">ఫారం-19</h3>
           <h3 className="text-center font-bold">భూ యాజమాన్య దారులకు నోటీసు</h3>
           <h3 className="text-center font-bold mb-4">భూ నిజ నిర్దారణ కొరకు</h3>
@@ -393,7 +395,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           </p>
         </div>
         
-        <div className="p-4 print:p-0! print:bg-transparent w-full" ref={printRef}>
+        <div className="p-2 sm:p-4 print:p-0! print:bg-transparent w-full overflow-hidden" ref={printRef}>
           <PrintableNotice
             districtName={districtName}
             mandalName={mandalName}
