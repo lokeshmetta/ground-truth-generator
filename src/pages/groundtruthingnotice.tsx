@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
@@ -99,7 +98,7 @@ const Index: React.FC = () => {
       </div>
 
       {showPreview && (
-        <div className="fixed bottom-6 right-6 print:hidden z-50 fixed-print-button">
+        <div className="fixed bottom-6 right-6 print:hidden z-50">
           <Button 
             onClick={handlePrint} 
             className="flex items-center gap-2 shadow-lg bg-primary hover:bg-primary/90 text-white rounded-full w-14 h-14 justify-center"

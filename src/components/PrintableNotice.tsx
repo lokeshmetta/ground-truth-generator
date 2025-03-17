@@ -78,18 +78,9 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
           <div className="table-container w-full">
             <table className="w-full border-collapse mt-4 khata-table table-fixed print-table">
               <colgroup>
-                {notice.fields.map((field, i) => {
-                  // Apply specific column widths based on field names
-                  let colClassName = '';
-                  
-                  if (field.en === 'Survey No') colClassName = 'w-[100px]';
-                  else if (field.en === 'Khata No') colClassName = 'w-[80px]';
-                  else if (field.en === 'Pattadar Name') colClassName = 'w-[180px] name-col';
-                  else if (field.en === 'Relation Name') colClassName = 'w-[180px] name-col';
-                  else if (field.en === 'Mobile Number') colClassName = 'w-[110px]';
-                  
-                  return <col key={`col-${i}`} className={colClassName} />;
-                })}
+                {notice.fields.map((field, i) => (
+                  <col key={`col-${i}`} className={i === 0 ? 'w-[100px]' : i === 1 ? 'w-[80px]' : i === 4 ? 'w-[110px]' : ''} />
+                ))}
                 <col className="signature-column w-[120px]" />
               </colgroup>
               <thead>
@@ -107,20 +98,11 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               <tbody>
                 {notice.rows.map((row, rowIndex) => (
                   <tr key={`row-${rowIndex}`}>
-                    {notice.fields.map((field, colIndex) => {
-                      // Apply specific cell classes based on field type
-                      let cellClassName = "border border-black p-2 text-center font-gautami";
-                      
-                      if (field.en === 'Pattadar Name' || field.en === 'Relation Name') {
-                        cellClassName += " name-cell text-wrap";
-                      }
-                      
-                      return (
-                        <td key={`cell-${rowIndex}-${colIndex}`} className={cellClassName}>
-                          {row[notice.mapping[field.en]] || ''}
-                        </td>
-                      );
-                    })}
+                    {notice.fields.map((field, colIndex) => (
+                      <td key={`cell-${rowIndex}-${colIndex}`} className="border border-black p-2 text-center font-gautami">
+                        {row[notice.mapping[field.en]] || ''}
+                      </td>
+                    ))}
                     <td className="border border-black p-2 signature-col font-gautami">&nbsp;</td>
                   </tr>
                 ))}
