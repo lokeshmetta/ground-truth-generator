@@ -1,8 +1,9 @@
+
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Printer, Download } from 'lucide-react';
 import PrintableNotice from './PrintableNotice';
 import { toast } from '@/components/ui/use-toast';
 
@@ -88,6 +89,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     }];
   }
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const prepareForPDF = () => {
     if (!printRef.current) return;
     
@@ -161,15 +166,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           width: 100%; 
           border-collapse: collapse; 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
-          table-layout: fixed;
         }
         th, td { 
           border: 1px solid black; 
           padding: 6px; 
           text-align: center; 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
-          word-break: break-word;
-          overflow-wrap: break-word;
         }
         .header { 
           text-align: center; 
@@ -185,7 +187,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
         }
         .footer { 
-          margin-top: 30px; 
+          margin-top: 15px; 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
         }
         .left-footer { 
@@ -198,20 +200,19 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         }
         .notice-section {
           page-break-after: always;
-          padding: 15mm 15mm 20mm 15mm;
+          padding: 0 15mm 20mm 15mm;
           margin-top: 0;
         }
         .notice-section:last-child {
           page-break-after: avoid;
         }
-        .signature-column {
-          width: 120px !important;
-        }
-        col:last-child {
-          width: 120px;
+        .blank-page {
+          height: 100vh;
+          page-break-after: always;
         }
         @page {
-          margin: 5mm;
+          margin-top: 0;
+          margin-bottom: 0;
         }
       `;
       wordContent.appendChild(style);
@@ -246,26 +247,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         `;
         noticeDiv.appendChild(content);
         
-        // Create table with colgroup for fixed column widths
+        // Create table
         const table = document.createElement('table');
-        const colgroup = document.createElement('colgroup');
-        
-        // Set column widths
-        notice.fields.forEach((field, i) => {
-          const col = document.createElement('col');
-          if (i === 0) col.style.width = '100px'; // Survey No
-          else if (i === 1) col.style.width = '80px'; // Khata No
-          else if (i === 4) col.style.width = '110px'; // Mobile Number
-          else col.style.width = 'auto'; // Other columns share remaining space
-          colgroup.appendChild(col);
-        });
-        
-        // Add signature column
-        const signatureCol = document.createElement('col');
-        signatureCol.style.width = '120px';
-        colgroup.appendChild(signatureCol);
-        
-        table.appendChild(colgroup);
         
         // Add table header
         const thead = document.createElement('thead');
@@ -385,6 +368,14 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           >
             <Download className="h-4 w-4" />
             Download Word
+          </Button>
+          <Button 
+            onClick={handlePrint} 
+            className="flex items-center gap-2"
+            size="sm"
+          >
+            <Printer className="h-4 w-4" />
+            Print
           </Button>
         </div>
       </div>

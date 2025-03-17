@@ -76,13 +76,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
           </div>
 
           <div className="table-container w-full">
-            <table className="w-full border-collapse mt-4 khata-table table-fixed print-table">
-              <colgroup>
-                {notice.fields.map((field, i) => (
-                  <col key={`col-${i}`} className={i === 0 ? 'w-[100px]' : i === 1 ? 'w-[80px]' : i === 4 ? 'w-[110px]' : ''} />
-                ))}
-                <col className="signature-column w-[120px]" />
-              </colgroup>
+            <table className="w-full border-collapse mt-4 khata-table table-fixed">
               <thead>
                 <tr>
                   {notice.fields.map((field, i) => (
@@ -114,7 +108,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             <div className="footer-signature-row">
               <div className="left-column">
                 <p className="body-footer-text telugu-text">స్తలం: {villageName || '_____________'}</p>
-                <br /><p className="body-footer-text telugu-text">తేది: {'_____________'}</p>
+               <br></br> <p className="body-footer-text telugu-text">తేది: {'_____________'}</p>
               </div>
               <div className="right-column">
                 <p className="body-footer-text telugu-text text-right">గ్రామ సర్వేయర్ సంతకం</p>

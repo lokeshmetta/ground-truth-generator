@@ -264,6 +264,7 @@ table {
   }
 
   .telugu-header-print h3:first-of-type {
+
     margin-top: 1.5rem;
     text-align: center;
     font-weight: bold;
@@ -306,32 +307,32 @@ table {
     min-width: 200px;
   }
 
-  /* Table column width settings for print */
-  .khata-table.print-table colgroup {
-    display: table-column-group !important;
-  }
-
   .khata-table.print-table col:nth-child(1) {
-    width: 100px !important;
+    width: 100px;
+    max-width: max-content;
   }
 
   .khata-table.print-table col:nth-child(2) {
-    width: 80px !important;
+    width: 80px;
   }
 
   .khata-table.print-table col:nth-child(5) {
-    width: 110px !important;
+    width: 110px;
   }
 
-  .khata-table.print-table col:last-child {
-    width: 120px !important;
+  .khata-table.print-table col:nth-child(3),
+  .khata-table.print-table col:nth-child(4) {
+    width: calc((100% - 450px) / 2);
+  }
+
+  .khata-table.print-table .signature-column {
+    width: 150px !important;
   }
 
   .khata-table.print-table td,
   .khata-table.print-table th {
     word-break: break-word;
     white-space: normal;
-    overflow-wrap: break-word;
   }
 
   [class^="mt-8"] {
@@ -421,28 +422,4 @@ table {
   border-collapse: collapse;
   margin-bottom: 20px;
   table-layout: fixed;
-}
-
-/* Floating sticky print button styling */
-.fixed-print-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 9999;
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .fixed-print-button {
-    display: block;
-  }
-}
-
-/* Make sure the print-table handles column widths properly */
-.print-table colgroup {
-  display: table-column-group;
-}
-
-.print-table col {
-  display: table-column;
 }
