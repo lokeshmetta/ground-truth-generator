@@ -126,6 +126,27 @@ table {
   table-layout: fixed;
 }
 
+/* Name columns styling */
+.name-col {
+  width: 180px !important;
+}
+
+.name-cell {
+  text-align: left !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  padding: 8px !important;
+}
+
+.text-wrap {
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
 /* Signature column width */
 .signature-col {
   width: 80px;
@@ -166,6 +187,14 @@ table {
   .signature-col {
     width: 60px;
   }
+
+  .name-col {
+    width: 140px !important;
+  }
+
+  .name-cell {
+    font-size: 0.7rem !important;
+  }
 }
 
 /* Extra small devices */
@@ -178,6 +207,15 @@ table {
   
   .signature-col {
     width: 50px;
+  }
+
+  .name-col {
+    width: 100px !important;
+  }
+
+  .name-cell {
+    font-size: 0.65rem !important;
+    padding: 4px !important;
   }
 }
 
