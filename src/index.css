@@ -150,11 +150,15 @@ table {
 
   .khata-table th,
   .khata-table td {
-    padding: 2px;
+    padding: 1px;
     font-size: 0.75rem;
     word-break: break-word;
     white-space: normal;
     overflow-wrap: break-word;
+  }
+
+  .khata-table th {
+    font-size: 0.85rem;
   }
 
   .khata-table {
@@ -162,7 +166,7 @@ table {
     max-width: 100%;
     table-layout: fixed;
   }
-  
+
   .signature-col {
     width: 60px;
   }
@@ -170,12 +174,13 @@ table {
 
 /* Extra small devices */
 @media (max-width: 480px) {
+
   .khata-table th,
   .khata-table td {
     padding: 1px;
     font-size: 0.7rem;
   }
-  
+
   .signature-col {
     width: 50px;
   }
@@ -294,7 +299,7 @@ table {
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 25px;
   }
 
   .left-column {
@@ -312,7 +317,7 @@ table {
   }
 
   .khata-table.print-table col:nth-child(1) {
-    width: 80px !important;
+    width: 90px !important;
   }
 
   .khata-table.print-table col:nth-child(2) {
@@ -356,7 +361,7 @@ table {
     margin-bottom: 20px !important;
     padding-bottom: 10px !important;
   }
-  
+
   .signature-column {
     width: 120px !important;
   }
@@ -394,7 +399,7 @@ table {
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 .left-column {

@@ -1,11 +1,10 @@
-
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Upload } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Upload } from "lucide-react";
 
 interface FormSectionProps {
   onFileUpload: (headers: string[], data: string[][]) => void;
@@ -19,6 +18,8 @@ interface FormSectionProps {
   setStartDate: (value: string) => void;
   startTime: string;
   setStartTime: (value: string) => void;
+  notificationNumber: string;
+  setNotificationNumber: (value: string) => void;
 }
 
 const FormSection: React.FC<FormSectionProps> = ({
@@ -33,6 +34,8 @@ const FormSection: React.FC<FormSectionProps> = ({
   setStartDate,
   startTime,
   setStartTime,
+  notificationNumber,
+  setNotificationNumber,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -40,7 +43,7 @@ const FormSection: React.FC<FormSectionProps> = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    
+
     setFileName(file.name);
     processCSVFile(file);
   };
@@ -58,10 +61,10 @@ const FormSection: React.FC<FormSectionProps> = ({
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const file = e.dataTransfer.files?.[0];
-    if (!file || !file.name.endsWith('.csv')) return;
-    
+    if (!file || !file.name.endsWith(".csv")) return;
+
     setFileName(file.name);
     processCSVFile(file);
   };
@@ -70,13 +73,15 @@ const FormSection: React.FC<FormSectionProps> = ({
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;
-      const rows = content.split('\n').map(row => 
-        row.split(',').map(cell => cell.trim())
-      );
-      
+      const rows = content
+        .split("\n")
+        .map((row) => row.split(",").map((cell) => cell.trim()));
+
       if (rows.length > 1) {
         const headers = rows[0];
-        const data = rows.slice(1).filter(row => row.some(cell => cell.trim() !== ''));
+        const data = rows
+          .slice(1)
+          .filter((row) => row.some((cell) => cell.trim() !== ""));
         onFileUpload(headers, data);
       }
     };
@@ -92,7 +97,7 @@ const FormSection: React.FC<FormSectionProps> = ({
     >
       <Card className="overflow-hidden glass-panel">
         <CardContent className="pt-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
@@ -150,15 +155,25 @@ const FormSection: React.FC<FormSectionProps> = ({
                   onChange={(e) => setStartTime(e.target.value)}
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="notficationNumber">Notification Number</Label>
+                <Input
+                  id="notificationNumber"
+                  placeholder="Enter 6(1) Notification Number"
+                  className="form-input"
+                  value={notificationNumber}
+                  onChange={(e) => setNotificationNumber(e.target.value)}
+                />
+              </div>
             </div>
-            
+
             <div className="pt-4">
               <h2 className="text-2xl font-medium mb-4">Upload CSV File</h2>
               <div
                 className={`border-2 border-dashed rounded-lg p-6 text-center transition-all ${
-                  isDragging 
-                    ? 'border-primary bg-primary/5' 
-                    : 'border-gray-300 hover:border-primary/50'
+                  isDragging
+                    ? "border-primary bg-primary/5"
+                    : "border-gray-300 hover:border-primary/50"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -170,9 +185,9 @@ const FormSection: React.FC<FormSectionProps> = ({
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">
-                      {fileName 
-                        ? `Selected file: ${fileName}` 
-                        : 'Drag and drop your CSV file here, or click to browse'}
+                      {fileName
+                        ? `Selected file: ${fileName}`
+                        : "Drag and drop your CSV file here, or click to browse"}
                     </p>
                   </div>
                   <input
@@ -182,9 +197,9 @@ const FormSection: React.FC<FormSectionProps> = ({
                     accept=".csv"
                     onChange={handleFileChange}
                   />
-                  <Button 
+                  <Button
                     variant="outline"
-                    onClick={() => document.getElementById('csvFile')?.click()}
+                    onClick={() => document.getElementById("csvFile")?.click()}
                     className="mt-2"
                   >
                     Browse Files

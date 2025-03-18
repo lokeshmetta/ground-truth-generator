@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 
 interface NoticeData {
   khataNo: string;
@@ -14,31 +13,42 @@ interface PrintableNoticeProps {
   villageName: string;
   startDate: string;
   startTime: string;
+  notificationNumber: string;
   notices: NoticeData[];
   showHeaderOnWeb?: boolean;
 }
 
 const formatTime = (timeString: string): string => {
-  if (!timeString) return '';
-  
+  if (!timeString) return "";
+
   try {
-    const [hours, minutes] = timeString.split(':');
+    const [hours, minutes] = timeString.split(":");
     const time = new Date();
     time.setHours(parseInt(hours));
     time.setMinutes(parseInt(minutes));
-    return time.toLocaleTimeString('en-IN', { hour: 'numeric', minute: 'numeric', hour12: true });
+    return time.toLocaleTimeString("en-IN", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
   } catch (error) {
     return timeString;
   }
 };
 
 const formatDate = (dateString: string): string => {
-  if (!dateString) return '';
-  
+  if (!dateString) return "";
+
   try {
     const date = new Date(dateString);
     // Format as dd-mm-yyyy
-    return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+    return date
+      .toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+      .replace(/\//g, "-");
   } catch (error) {
     return dateString;
   }
@@ -50,8 +60,9 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   villageName,
   startDate,
   startTime,
+  notificationNumber,
   notices,
-  showHeaderOnWeb = true
+  showHeaderOnWeb = true,
 }) => {
   const formattedTime = formatTime(startTime);
   const formattedDate = formatDate(startDate);
@@ -61,17 +72,30 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
       {notices.map((notice, noticeIndex) => (
         <div key={`notice-${noticeIndex}`} className="khata-group w-full">
           {/* Telugu header - only visible in print view, hidden in web view if showHeaderOnWeb is false */}
-          <div className={`telugu-header-print telugu-text ${!showHeaderOnWeb ? 'hidden-on-web' : ''}`}>
+          <div
+            className={`telugu-header-print telugu-text ${
+              !showHeaderOnWeb ? "hidden-on-web" : ""
+            }`}
+          >
             <h3>ఫారం-19</h3>
             <h3>భూ యాజమాన్య దారులకు నోటీసు</h3>
             <h3>భూ నిజ నిర్దారణ కొరకు</h3>
             <p>
-              1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, {districtName || '____________________'} జిల్లా,
-              {mandalName || '_____________________'} మండలం, {villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-              {formattedDate || '_____________'} తేదీన {formattedTime || '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.<br />
-              2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
-              యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
-              అందించవలసినదిగా తెలియజేయడమైనది.
+              1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ RC
+              నెం.
+              {notificationNumber || "6(i)"}, అనుసరించి,{" "}
+              {districtName || "____________________"} జిల్లా,
+              {mandalName || "_____________________"} మండలం,{" "}
+              {villageName || "____________________"} గ్రామములో సీమానిర్ణయం
+              (demarcation) మరియు సర్వే పనులు
+              {formattedDate || "_____________"} తేదీన{" "}
+              {formattedTime || "________"} గం.ని.లకు ప్రారంభిచబడును అని
+              తెలియజేయడమైనది.
+              <br />
+              2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి
+              సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ యజమానులు భూమి వద్ద
+              హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు
+              అవసరమైన సహాయ సహకారములు అందించవలసినదిగా తెలియజేయడమైనది.
             </p>
           </div>
 
@@ -80,7 +104,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               <thead>
                 <tr>
                   {notice.fields.map((field, i) => (
-                    <th key={`header-${i}`} className="border border-black p-2 text-center font-gautami">
+                    <th
+                      key={`header-${i}`}
+                      className="border border-black p-2 text-center font-gautami"
+                    >
                       {field.te}
                     </th>
                   ))}
@@ -93,25 +120,43 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                 {notice.rows.map((row, rowIndex) => (
                   <tr key={`row-${rowIndex}`}>
                     {notice.fields.map((field, colIndex) => (
-                      <td key={`cell-${rowIndex}-${colIndex}`} className="border border-black p-2 text-center font-gautami">
-                        {row[notice.mapping[field.en]] || ''}
+                      <td
+                        key={`cell-${rowIndex}-${colIndex}`}
+                        className="border border-black p-2 text-center font-gautami"
+                      >
+                        {row[notice.mapping[field.en]] || ""}
                       </td>
                     ))}
-                    <td className="border border-black p-2 w-[150px] font-gautami">&nbsp;</td>
+                    <td className="border border-black p-2 w-[150px] font-gautami">
+                      &nbsp;
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <p
+              className={`thirdpoint-print telugu-text ${
+                !showHeaderOnWeb ? "hidden-on-web" : ""
+              }`}
+            >
+              3) నోటీసు యొక్క ప్రతిని సంతకం చేసి తిరిగి పంపించవలెను
+            </p>
           </div>
 
           <div className="page-footer">
             <div className="footer-signature-row">
               <div className="left-column">
-                <p className="body-footer-text telugu-text">స్తలం: {villageName || '_____________'}</p>
-                <br /><p className="body-footer-text telugu-text">తేది: {'_____________'}</p>
+                <p className="body-footer-text telugu-text">
+                  స్తలం: {villageName || "_____________"}
+                </p>
+                <p className="body-footer-text telugu-text">
+                  తేది: {"_____________"}
+                </p>
               </div>
               <div className="right-column">
-                <p className="body-footer-text telugu-text text-right">గ్రామ సర్వేయర్ సంతకం</p>
+                <p className="body-footer-text telugu-text text-right">
+                  గ్రామ సర్వేయర్ సంతకం
+                </p>
               </div>
             </div>
           </div>

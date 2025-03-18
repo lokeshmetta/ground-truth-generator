@@ -1,26 +1,27 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import Header from '@/components/Header';
-import FormSection from '@/components/FormSection';
-import MappingTable from '@/components/MappingTable';
-import PreviewSection from '@/components/PreviewSection';
-import { toast } from '@/components/ui/use-toast';
-import { Button } from '@/components/ui/button';
-import { Printer } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import Header from "@/components/Header";
+import FormSection from "@/components/FormSection";
+import MappingTable from "@/components/MappingTable";
+import PreviewSection from "@/components/PreviewSection";
+import { toast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
 
 const Index: React.FC = () => {
   // Form state
-  const [districtName, setDistrictName] = useState('');
-  const [mandalName, setMandalName] = useState('');
-  const [villageName, setVillageName] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  
+  const [districtName, setDistrictName] = useState("");
+  const [mandalName, setMandalName] = useState("");
+  const [villageName, setVillageName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [notificationNumber, setNotificationNumber] = useState("");
+
   // CSV data state
   const [headers, setHeaders] = useState<string[]>([]);
   const [data, setData] = useState<string[][]>([]);
   const [showMapping, setShowMapping] = useState(false);
-  
+
   // Mapping and preview state
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [showPreview, setShowPreview] = useState(false);
@@ -30,7 +31,7 @@ const Index: React.FC = () => {
     setData(data);
     setShowMapping(true);
     setShowPreview(false);
-    
+
     toast({
       title: "CSV Uploaded Successfully",
       description: `${data.length} rows loaded. Please map the columns.`,
@@ -40,7 +41,7 @@ const Index: React.FC = () => {
   const handleMappingSubmit = (mapping: Record<string, string>) => {
     setMapping(mapping);
     setShowPreview(true);
-    
+
     toast({
       title: "Column Mapping Complete",
       description: "Preview generated. You can now print the notices.",
@@ -62,7 +63,7 @@ const Index: React.FC = () => {
         <div className="whitespace-nowrap">
           <Header />
         </div>
-        
+
         <div className="mt-8 space-y-8 print:m-0 w-full overflow-hidden">
           <FormSection
             onFileUpload={handleFileUpload}
@@ -76,21 +77,24 @@ const Index: React.FC = () => {
             setStartDate={setStartDate}
             startTime={startTime}
             setStartTime={setStartTime}
+            notificationNumber={notificationNumber}
+            setNotificationNumber={setNotificationNumber}
           />
-          
+
           <MappingTable
             headers={headers}
             show={showMapping}
             onMappingSubmit={handleMappingSubmit}
             onPreview={() => setShowPreview(true)}
           />
-          
+
           <PreviewSection
             districtName={districtName}
             mandalName={mandalName}
             villageName={villageName}
             startDate={startDate}
             startTime={startTime}
+            notificationNumber={notificationNumber}
             show={showPreview}
             headers={headers}
             data={data}
@@ -101,8 +105,8 @@ const Index: React.FC = () => {
 
       {showPreview && (
         <div className="fixed bottom-8 right-8 print:hidden z-50">
-          <Button 
-            onClick={handlePrint} 
+          <Button
+            onClick={handlePrint}
             className="flex items-center gap-2 shadow-lg bg-primary hover:bg-primary/90 text-white rounded-full w-14 h-14 justify-center"
             size="icon"
           >
