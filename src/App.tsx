@@ -14,13 +14,14 @@ const queryClient = new QueryClient();
 // This component handles redirects from the 404.html page
 const RedirectHandler = () => {
   useEffect(() => {
-    // Check if there's a redirect path stored by the script in index.html
+    // Check if there's a redirect path stored
     if (window.redirectTo) {
+      console.log("Redirecting to:", window.redirectTo);
       // Get the redirect path and clear it
       const path = window.redirectTo;
       window.redirectTo = null;
       
-      // Navigate to the path
+      // Navigate to the path using window.location for a full redirect
       window.location.href = `/ground-truth-generator${path}`;
     }
   }, []);

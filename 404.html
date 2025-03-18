@@ -9,14 +9,20 @@
     // MIT License
     // https://github.com/rafgraph/spa-github-pages
     // This script takes the current URL and converts the path and query
-    // parameters into a redirect URL with a special "pathSegments" parameter
-    // that the index.html page can use to route the app correctly.
-    var pathSegments = location.pathname.substr(1).split('/');
-    var redirectUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/ground-truth-generator/index.html';
+    // parameters into a redirect URL
+    var pathSegments = location.pathname.split('/');
+    var repoName = 'ground-truth-generator';
+    
+    // Find the index of the repo name in the path segments
+    var repoIndex = pathSegments.indexOf(repoName);
+    var pathSegmentsToUse = pathSegments.slice(repoIndex + 1);
+    
+    // Create the redirect URL with the correct path segments
+    var redirectUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/' + repoName + '/';
     
     // If there are path segments, add them as a query parameter
-    if (pathSegments[0].length > 0) {
-      redirectUrl = redirectUrl + '?p=' + pathSegments.join('/');
+    if (pathSegmentsToUse.length > 0 && pathSegmentsToUse[0].length > 0) {
+      window.localStorage.setItem('spa-redirect', '/' + pathSegmentsToUse.join('/'));
     }
     
     // Redirect to the new URL
