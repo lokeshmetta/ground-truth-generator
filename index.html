@@ -16,35 +16,26 @@
   </style>
   <!-- Script for GitHub Pages SPA routing -->
   <script type="text/javascript">
-    // This script checks if a redirect is needed and redirects to the proper path
+    // Check localStorage for any redirect path
     (function() {
-      // Check for the 'p' query parameter
-      var match = window.location.search.match(/p=([^&]*)/);
-      var pathSegments = match ? match[1].split('/') : [];
-      
-      if (pathSegments.length > 0) {
-        // Remove the query parameter from the URL
-        window.history.replaceState(
-          null,
-          null,
-          window.location.pathname.split('?')[0] + window.location.hash
-        );
+      var redirectPath = window.localStorage.getItem('spa-redirect');
+      if (redirectPath) {
+        // Remove the redirect path from localStorage
+        window.localStorage.removeItem('spa-redirect');
         
         // Store the path to redirect to after the app loads
-        window.redirectTo = '/' + pathSegments.join('/');
+        window.redirectTo = redirectPath;
       }
     })();
   </script>
-  <script type="module" crossorigin src="./assets/index-BH9KCZY7.js"></script>
+  <script type="module" crossorigin src="./assets/index-sAzuKMXt.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-xfavGeCx.css">
 </head>
-
 
 <body>
   <div id="root"></div>
   <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
   <!-- <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script> -->
-
 </body>
 
 </html>
