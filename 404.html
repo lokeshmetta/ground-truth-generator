@@ -8,25 +8,25 @@
     // Single Page Apps for GitHub Pages
     // MIT License
     // https://github.com/rafgraph/spa-github-pages
-    // This script takes the current URL and converts the path and query
-    // parameters into a redirect URL
-    var pathSegments = location.pathname.split('/');
-    var repoName = 'ground-truth-generator';
+    var segmentCount = 1; // Number of segments in the path after the domain
+    var repoName = 'ground-truth-generator'; // Your repository name
+
+    var l = window.location;
+    var fullPath = l.pathname;
     
-    // Find the index of the repo name in the path segments
-    var repoIndex = pathSegments.indexOf(repoName);
-    var pathSegmentsToUse = pathSegments.slice(repoIndex + 1);
+    // Extract the part of the path after the repository name
+    var pathWithoutRepo = fullPath.substring(fullPath.indexOf('/' + repoName) + repoName.length + 1);
     
-    // Create the redirect URL with the correct path segments
-    var redirectUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/' + repoName + '/';
-    
-    // If there are path segments, add them as a query parameter
-    if (pathSegmentsToUse.length > 0 && pathSegmentsToUse[0].length > 0) {
-      window.localStorage.setItem('spa-redirect', '/' + pathSegmentsToUse.join('/'));
+    // Save the path to redirect to in sessionStorage
+    if (pathWithoutRepo) {
+      sessionStorage.setItem('redirect', pathWithoutRepo);
     }
     
-    // Redirect to the new URL
-    location.replace(redirectUrl);
+    // Redirect to the base URL of your app
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      '/' + repoName + '/'
+    );
   </script>
 </head>
 <body>

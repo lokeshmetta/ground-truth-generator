@@ -16,15 +16,15 @@
   </style>
   <!-- Script for GitHub Pages SPA routing -->
   <script type="text/javascript">
-    // Check localStorage for any redirect path
     (function() {
-      var redirectPath = window.localStorage.getItem('spa-redirect');
-      if (redirectPath) {
-        // Remove the redirect path from localStorage
-        window.localStorage.removeItem('spa-redirect');
+      // Check sessionStorage for redirect path
+      var redirect = sessionStorage.getItem('redirect');
+      if (redirect) {
+        // Remove the redirect path from sessionStorage
+        sessionStorage.removeItem('redirect');
         
         // Store the path to redirect to after the app loads
-        window.redirectTo = redirectPath;
+        window.redirectTo = redirect;
       }
     })();
   </script>
