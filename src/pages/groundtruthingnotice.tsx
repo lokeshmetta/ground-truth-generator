@@ -59,7 +59,9 @@ const Index: React.FC = () => {
       className="min-h-screen bg-gradient-to-b from-background to-secondary/20 overflow-hidden w-full"
     >
       <div className="container mx-auto px-2 sm:px-4 py-8 max-w-6xl w-full overflow-hidden">
-        <Header />
+        <div className="whitespace-nowrap">
+          <Header />
+        </div>
         
         <div className="mt-8 space-y-8 print:m-0 w-full overflow-hidden">
           <FormSection
@@ -98,7 +100,7 @@ const Index: React.FC = () => {
       </div>
 
       {showPreview && (
-        <div className="fixed bottom-6 right-6 print:hidden z-50">
+        <div className="fixed bottom-8 right-8 print:hidden z-50">
           <Button 
             onClick={handlePrint} 
             className="flex items-center gap-2 shadow-lg bg-primary hover:bg-primary/90 text-white rounded-full w-14 h-14 justify-center"

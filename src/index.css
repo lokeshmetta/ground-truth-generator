@@ -312,7 +312,7 @@ table {
   }
 
   .khata-table.print-table col:nth-child(1) {
-    width: 100px !important;
+    width: 80px !important;
   }
 
   .khata-table.print-table col:nth-child(2) {
