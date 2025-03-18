@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,6 +14,27 @@
   <style>
     /* Example of critical CSS */
   </style>
+  <!-- Script for GitHub Pages SPA routing -->
+  <script type="text/javascript">
+    // This script checks if a redirect is needed and redirects to the proper path
+    (function() {
+      // Check for the 'p' query parameter
+      var match = window.location.search.match(/p=([^&]*)/);
+      var pathSegments = match ? match[1].split('/') : [];
+      
+      if (pathSegments.length > 0) {
+        // Remove the query parameter from the URL
+        window.history.replaceState(
+          null,
+          null,
+          window.location.pathname.split('?')[0] + window.location.hash
+        );
+        
+        // Store the path to redirect to after the app loads
+        window.redirectTo = '/' + pathSegments.join('/');
+      }
+    })();
+  </script>
 </head>
 
 

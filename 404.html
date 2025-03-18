@@ -1,12 +1,29 @@
+
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta http-equiv="refresh" content="0; url=./index.html" />
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script type="text/javascript">
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current URL and converts the path and query
+    // parameters into a redirect URL with a special "pathSegments" parameter
+    // that the index.html page can use to route the app correctly.
+    var pathSegments = location.pathname.substr(1).split('/');
+    var redirectUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/ground-truth-generator/index.html';
+    
+    // If there are path segments, add them as a query parameter
+    if (pathSegments[0].length > 0) {
+      redirectUrl = redirectUrl + '?p=' + pathSegments.join('/');
+    }
+    
+    // Redirect to the new URL
+    location.replace(redirectUrl);
+  </script>
 </head>
-
 <body>
-    <p>If you are not redirected, <a href="./index.html">click here</a>.</p>
+  <p>If you are not redirected, <a href="./index.html">click here</a>.</p>
 </body>
-
 </html>
