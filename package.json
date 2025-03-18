@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://lokeshmetta.github.io/ground-truth-generator",
+  "homepage": "https://lokeshmetta.github.io/ground-truth-generator/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
