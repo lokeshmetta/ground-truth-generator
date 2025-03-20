@@ -85,9 +85,9 @@ const MappingTable: React.FC<MappingTableProps> = ({ headers, show, onMappingSub
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-left font-bold">Field Name</TableHead>
-                      <TableHead className="text-left font-bold telugu-text">Telugu Field Name</TableHead>
-                      <TableHead className="text-left font-bold">CSV Column</TableHead>
+                      <TableHead className="text-center font-bold">Field Name</TableHead>
+                      <TableHead className="text-center font-bold telugu-text">Telugu Field Name</TableHead>
+                      <TableHead className="text-center font-bold">CSV Column</TableHead>
                       <TableHead className="w-16 text-center font-bold">Status</TableHead>
                     </TableRow>
                   </TableHeader>

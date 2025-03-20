@@ -70,7 +70,7 @@ const Home: React.FC = () => {
     >
       <header className="header">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-center text-blue-800  ">
+          <h1 className="text-3xl font-bold text-center text-gray-800">
             Resurvey Notice Generator
           </h1>
         </div>
