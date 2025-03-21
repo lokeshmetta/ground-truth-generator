@@ -1,11 +1,10 @@
-
-import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Printer, Download } from 'lucide-react';
-import PrintableNotice from './PrintableNotice';
-import { toast } from '@/components/ui/use-toast';
+import React, { useRef } from "react";
+import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import PrintableNotice from "./PrintableNotice";
+import { toast } from "@/components/ui/use-toast";
 
 interface PreviewSectionProps {
   districtName: string;
@@ -13,6 +12,7 @@ interface PreviewSectionProps {
   villageName: string;
   startDate: string;
   startTime: string;
+  notificationNumber: string;
   show: boolean;
   headers: string[];
   data: string[][];
@@ -25,6 +25,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   villageName,
   startDate,
   startTime,
+  notificationNumber,
   show,
   headers,
   data,
@@ -43,37 +44,35 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   });
 
   const requiredFields = [
-    { en: 'Survey No', te: 'సర్వే నెం' },
-    { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
-    { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
-    { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' },
+    { en: "Survey No", te: "సర్వే నెం" },
+    { en: "Khata No", te: "ఖాతా సంఖ్య" },
+    { en: "Pattadar Name", te: "భూ యజమాని పేరు" },
+    { en: "Relation Name", te: "భర్త/తండ్రి పేరు" },
   ];
 
-  const optionalFields = [
-    { en: 'Mobile Number', te: 'మొబైల్ నెంబరు' },
-  ];
+  const optionalFields = [{ en: "Mobile Number", te: "మొబైల్ నెంబరు" }];
 
   const fields = [...requiredFields, ...optionalFields];
 
-  const hasKhataNo = 'Khata No' in indexMapping;
-  
+  const hasKhataNo = "Khata No" in indexMapping;
+
   let notices: {
     khataNo: string;
     rows: string[][];
     mapping: Record<string, number>;
     fields: { en: string; te: string }[];
   }[] = [];
-  
+
   if (hasKhataNo) {
     const khataGroups: Record<string, string[][]> = {};
-    data.forEach(row => {
-      const khataNo = row[indexMapping['Khata No']] || 'Unknown';
+    data.forEach((row) => {
+      const khataNo = row[indexMapping["Khata No"]] || "Unknown";
       if (!khataGroups[khataNo]) {
         khataGroups[khataNo] = [];
       }
       khataGroups[khataNo].push(row);
     });
-    
+
     notices = Object.entries(khataGroups).map(([khataNo, rows]) => ({
       khataNo,
       rows,
@@ -81,65 +80,73 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       fields,
     }));
   } else {
-    notices = [{
-      khataNo: 'All Data',
-      rows: data,
-      mapping: indexMapping,
-      fields,
-    }];
+    notices = [
+      {
+        khataNo: "All Data",
+        rows: data,
+        mapping: indexMapping,
+        fields,
+      },
+    ];
   }
-
-  const handlePrint = () => {
-    window.print();
-  };
 
   const prepareForPDF = () => {
     if (!printRef.current) return;
-    
+
     // Clone the printRef content for PDF preparation
     const pdfContent = printRef.current.cloneNode(true) as HTMLElement;
-    
+
     // Add print-specific classes to make it look like print mode
-    const noticeElements = pdfContent.querySelectorAll('.khata-group');
-    noticeElements.forEach(notice => {
+    const noticeElements = pdfContent.querySelectorAll(".khata-group");
+    noticeElements.forEach((notice) => {
       // Show the Telugu header in the PDF
-      const headerElement = notice.querySelector('.telugu-header-print');
+      const headerElement = notice.querySelector(".telugu-header-print");
       if (headerElement) {
-        headerElement.classList.remove('hidden-on-web');
+        headerElement.classList.remove("hidden-on-web");
       }
     });
-    
+
     // Create a temporary container to append our clone to
-    const tempContainer = document.createElement('div');
+    const tempContainer = document.createElement("div");
     tempContainer.appendChild(pdfContent);
-    tempContainer.style.position = 'absolute';
-    tempContainer.style.left = '-9999px';
-    tempContainer.style.width = '210mm'; // A4 width
+    tempContainer.style.position = "absolute";
+    tempContainer.style.left = "-9999px";
+    tempContainer.style.width = "210mm"; // A4 width
     document.body.appendChild(tempContainer);
-    
+
     return { tempContainer, pdfContent };
   };
 
   const formatTime = (timeString: string): string => {
-    if (!timeString) return '';
-    
+    if (!timeString) return "";
+
     try {
-      const [hours, minutes] = timeString.split(':');
+      const [hours, minutes] = timeString.split(":");
       const time = new Date();
       time.setHours(parseInt(hours));
       time.setMinutes(parseInt(minutes));
-      return time.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      return time.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
     } catch (error) {
       return timeString;
     }
   };
 
   const formatDate = (dateString: string): string => {
-    if (!dateString) return '';
-    
+    if (!dateString) return "";
+
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+      return date
+        .toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+        .replace(/\//g, "-");
     } catch (error) {
       return dateString;
     }
@@ -148,10 +155,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   const handleDownloadWord = async () => {
     try {
       // Create a new HTML document for Word conversion
-      const wordContent = document.createElement('div');
-      
+      const wordContent = document.createElement("div");
+
       // Add styles for Word document with Gautami font
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.textContent = `
         @font-face {
           font-family: 'Gautami';
@@ -162,16 +169,25 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           margin: 0;
           padding: 0;
         }
+        .thirdpoint { 
+          font-family: 'Gautami', 'Noto Sans Telugu', sans-serif; 
+          font-size: 12pt; 
+          line-height
+          padding: 0;
+        }
         table { 
           width: 100%; 
           border-collapse: collapse; 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
+          table-layout: fixed;
         }
         th, td { 
           border: 1px solid black; 
           padding: 6px; 
           text-align: center; 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
+          word-break: break-word;
+          overflow-wrap: break-word;
         }
         .header { 
           text-align: center; 
@@ -187,7 +203,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
         }
         .footer { 
-          margin-top: 15px; 
+          margin-top: 10px; 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
         }
         .left-footer { 
@@ -200,116 +216,150 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         }
         .notice-section {
           page-break-after: always;
-          padding: 0 15mm 20mm 15mm;
+          padding: 15mm 15mm 20mm 15mm;
           margin-top: 0;
         }
         .notice-section:last-child {
           page-break-after: avoid;
         }
-        .blank-page {
-          height: 100vh;
-          page-break-after: always;
+        .signature-column {
+          width: 120px !important;
+        }
+        col:last-child {
+          width: 120px;
         }
         @page {
-          margin-top: 0;
-          margin-bottom: 0;
+          margin: 5mm;
         }
       `;
       wordContent.appendChild(style);
-      
+
       // Process each notice
       notices.forEach((notice, index) => {
-        const noticeDiv = document.createElement('div');
-        noticeDiv.className = 'notice-section telugu-text';
-        
+        const noticeDiv = document.createElement("div");
+        noticeDiv.className = "notice-section telugu-text";
+
         // Add header at the very top of the page
-        const header = document.createElement('div');
-        header.className = 'header telugu-text';
-        header.style.marginTop = '0';
-        header.style.paddingTop = '0';
+        const header = document.createElement("div");
+        header.className = "header telugu-text";
+        header.style.marginTop = "0";
+        header.style.paddingTop = "0";
         header.innerHTML = `
           <h1 style="font-size: 14pt; margin-top: 0;">ఫారం-19</h1>
           <h1 style="font-size: 14pt;">భూ యాజమాన్య దారులకు నోటీసు</h1>
           <h1 style="font-size: 14pt; margin-bottom: 15px;">భూ నిజ నిర్దారణ కొరకు</h1>
         `;
         noticeDiv.appendChild(header);
-        
+
         // Add content
-        const content = document.createElement('div');
-        content.className = 'content telugu-text';
+        const content = document.createElement("div");
+        content.className = "content telugu-text";
         content.innerHTML = `
-          <p style="font-size: 12pt; line-height: 1.5;">1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, ${districtName || '____________________'} జిల్లా, 
-          ${mandalName || '_____________________'} మండలం, ${villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-          ${formatDate(startDate) || '_____________'} తేదీన ${formatTime(startTime) || '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
+          <p style="font-size: 12pt; line-height: 1.5;">1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ RC నెం. ${
+            notificationNumber || "6(i)"
+          }, అనుసరించి, ${districtName || "____________________"} జిల్లా, 
+          ${mandalName || "_____________________"} మండలం, ${
+          villageName || "____________________"
+        } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
+          ${formatDate(startDate) || "_____________"} తేదీన ${
+          formatTime(startTime) || "________"
+        } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
           <p style="font-size: 12pt; line-height: 1.5;">2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
           యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>
         `;
         noticeDiv.appendChild(content);
-        
-        // Create table
-        const table = document.createElement('table');
-        
+
+        // Create table with colgroup for fixed column widths
+        const table = document.createElement("table");
+        const colgroup = document.createElement("colgroup");
+
+        // Set column widths
+        notice.fields.forEach((field, i) => {
+          const col = document.createElement("col");
+          if (i === 0) col.style.width = "90px"; // Survey No
+          else if (i === 1) col.style.width = "80px"; // Khata No
+          else if (i === 4) col.style.width = "110px"; // Mobile Number
+          else col.style.width = "auto"; // Other columns share remaining space
+          colgroup.appendChild(col);
+        });
+
+        // Add signature column
+        const signatureCol = document.createElement("col");
+        signatureCol.style.width = "120px";
+        colgroup.appendChild(signatureCol);
+
+        table.appendChild(colgroup);
+
         // Add table header
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        
-        notice.fields.forEach(field => {
-          const th = document.createElement('th');
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+
+        notice.fields.forEach((field) => {
+          const th = document.createElement("th");
           th.textContent = field.te;
-          th.style.fontWeight = 'bold';
+          th.style.fontWeight = "bold";
           headerRow.appendChild(th);
         });
-        
-        const signatureTh = document.createElement('th');
-        signatureTh.textContent = 'సంతకం';
-        signatureTh.style.fontWeight = 'bold';
+
+        const signatureTh = document.createElement("th");
+        signatureTh.textContent = "సంతకం";
+        signatureTh.style.fontWeight = "bold";
         headerRow.appendChild(signatureTh);
-        
+
         thead.appendChild(headerRow);
         table.appendChild(thead);
-        
+
         // Add table body
-        const tbody = document.createElement('tbody');
-        
-        notice.rows.forEach(row => {
-          const tr = document.createElement('tr');
-          
-          notice.fields.forEach(field => {
-            const td = document.createElement('td');
-            td.textContent = row[notice.mapping[field.en]] || '';
+        const tbody = document.createElement("tbody");
+
+        notice.rows.forEach((row) => {
+          const tr = document.createElement("tr");
+
+          notice.fields.forEach((field) => {
+            const td = document.createElement("td");
+            td.textContent = row[notice.mapping[field.en]] || "";
             tr.appendChild(td);
           });
-          
-          const signatureTd = document.createElement('td');
-          signatureTd.innerHTML = '&nbsp;';
+
+          const signatureTd = document.createElement("td");
+          signatureTd.innerHTML = "&nbsp;";
           tr.appendChild(signatureTd);
-          
+
           tbody.appendChild(tr);
         });
-        
+
         table.appendChild(tbody);
         noticeDiv.appendChild(table);
-        
+        // Add notice number with proper styling
+        const noticeNumber = document.createElement("p");
+
+        noticeNumber.className = "thirdpoint telugu-text";
+
+        noticeNumber.innerHTML =
+          '<p style="font-size: 12pt; font-family: Gautami, "Noto Sans Telugu", sans-serif; line-height: 1.5;">3) నోటీసు యొక్క ప్రతిని సంతకం చేసి తిరిగి పంపించవలెను</p>';
+        noticeDiv.appendChild(noticeNumber);
+
         // Add footer
-        const footer = document.createElement('div');
-        footer.className = 'footer telugu-text';
-        footer.style.marginTop = '30px';
+        const footer = document.createElement("div");
+        footer.className = "footer telugu-text";
+        footer.style.marginTop = "10px";
         footer.innerHTML = `
-          <div class="left-footer">
-            <p>స్తలం: ${villageName || '_____________'}</p>
-            <p>తేది: _____________</p>
-          </div>
-          <div class="right-footer">
+        <div class="right-footer">
             <p>గ్రామ సర్వేయర్ సంతకం</p>
           </div>
+          <div class="left-footer">
+            <p>స్తలం: ${villageName || "_____________"}</p>
+            <p>తేది: _____________</p>
+          </div>
+          
           <div style="clear: both;"></div>
         `;
         noticeDiv.appendChild(footer);
-        
+
         wordContent.appendChild(noticeDiv);
       });
-      
+
       // Convert to Blob - use HTML format for better rendering in Word
       const htmlContent = `
         <!DOCTYPE html>
@@ -323,31 +373,32 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         </body>
         </html>
       `;
-      
-      const blob = new Blob([htmlContent], { type: 'application/msword' });
-      
+
+      const blob = new Blob([htmlContent], { type: "application/msword" });
+
       // Create download link
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `land-notices-${villageName || 'village'}.doc`;
-      
+      link.download = `land-notices-${villageName || "village"}.doc`;
+
       // Trigger download
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       toast({
         title: "Word Document Downloaded Successfully",
         description: "Land notices have been saved to your device.",
       });
     } catch (error) {
-      console.error('Error generating Word document:', error);
+      console.error("Error generating Word document:", error);
       toast({
         title: "Word Document Generation Failed",
-        description: "There was an error creating the document. Please try again.",
+        description:
+          "There was an error creating the document. Please try again.",
         variant: "destructive",
       });
-    };
+    }
   };
 
   return (
@@ -360,7 +411,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       <div className="no-print flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-2xl font-medium">Preview</h2>
         <div className="flex gap-3">
-          <Button 
+          <Button
             onClick={handleDownloadWord}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded"
             variant="secondary"
@@ -368,14 +419,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           >
             <Download className="h-4 w-4" />
             Download Word
-          </Button>
-          <Button 
-            onClick={handlePrint} 
-            className="flex items-center gap-2"
-            size="sm"
-          >
-            <Printer className="h-4 w-4" />
-            Print
           </Button>
         </div>
       </div>
@@ -386,22 +429,34 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <h3 className="text-center font-bold">భూ యాజమాన్య దారులకు నోటీసు</h3>
           <h3 className="text-center font-bold mb-4">భూ నిజ నిర్దారణ కొరకు</h3>
           <p className="text-left">
-            1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ నెం. 6(i), అనుసరించి, {districtName || '____________________'} జిల్లా,
-            {mandalName || '_____________________'} మండలం, {villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-            {startDate ? formatDate(startDate) : '_____________'} తేదీన {startTime ? formatTime(startTime) : '________'} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.<br />
-            2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
-            యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
-            అందించవలసినదిగా తెలియజేయడమైనది.
+            1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ RC నెం.
+            {notificationNumber || "6(i)"}, అనుసరించి,{" "}
+            {districtName || "____________________"} జిల్లా,
+            {mandalName || "_____________________"} మండలం,{" "}
+            {villageName || "____________________"} గ్రామములో సీమానిర్ణయం
+            (demarcation) మరియు సర్వే పనులు
+            {startDate ? formatDate(startDate) : "_____________"} తేదీన{" "}
+            {startTime ? formatTime(startTime) : "________"} గం.ని.లకు
+            ప్రారంభిచబడును అని తెలియజేయడమైనది.
+            <br />
+            2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి
+            సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ యజమానులు భూమి వద్ద హాజరై
+            మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ
+            సహకారములు అందించవలసినదిగా తెలియజేయడమైనది.
           </p>
         </div>
-        
-        <div className="p-2 sm:p-4 print:p-0! print:bg-transparent w-full overflow-hidden" ref={printRef}>
+
+        <div
+          className="p-2 sm:p-4 print:p-0! print:bg-transparent w-full overflow-hidden"
+          ref={printRef}
+        >
           <PrintableNotice
             districtName={districtName}
             mandalName={mandalName}
             villageName={villageName}
             startDate={startDate}
             startTime={startTime}
+            notificationNumber={notificationNumber}
             notices={notices}
             showHeaderOnWeb={false}
           />

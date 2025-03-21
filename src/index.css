@@ -150,11 +150,15 @@ table {
 
   .khata-table th,
   .khata-table td {
-    padding: 2px;
+    padding: 1px;
     font-size: 0.75rem;
     word-break: break-word;
     white-space: normal;
     overflow-wrap: break-word;
+  }
+
+  .khata-table th {
+    font-size: 0.85rem;
   }
 
   .khata-table {
@@ -162,7 +166,7 @@ table {
     max-width: 100%;
     table-layout: fixed;
   }
-  
+
   .signature-col {
     width: 60px;
   }
@@ -170,12 +174,13 @@ table {
 
 /* Extra small devices */
 @media (max-width: 480px) {
+
   .khata-table th,
   .khata-table td {
     padding: 1px;
     font-size: 0.7rem;
   }
-  
+
   .signature-col {
     width: 50px;
   }
@@ -264,7 +269,6 @@ table {
   }
 
   .telugu-header-print h3:first-of-type {
-
     margin-top: 1.5rem;
     text-align: center;
     font-weight: bold;
@@ -295,7 +299,7 @@ table {
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 25px;
   }
 
   .left-column {
@@ -307,32 +311,32 @@ table {
     min-width: 200px;
   }
 
+  /* Table column width settings for print */
+  .khata-table.print-table colgroup {
+    display: table-column-group !important;
+  }
+
   .khata-table.print-table col:nth-child(1) {
-    width: 100px;
-    max-width: max-content;
+    width: 90px !important;
   }
 
   .khata-table.print-table col:nth-child(2) {
-    width: 80px;
+    width: 80px !important;
   }
 
   .khata-table.print-table col:nth-child(5) {
-    width: 110px;
+    width: 110px !important;
   }
 
-  .khata-table.print-table col:nth-child(3),
-  .khata-table.print-table col:nth-child(4) {
-    width: calc((100% - 450px) / 2);
-  }
-
-  .khata-table.print-table .signature-column {
-    width: 150px !important;
+  .khata-table.print-table col:last-child {
+    width: 120px !important;
   }
 
   .khata-table.print-table td,
   .khata-table.print-table th {
     word-break: break-word;
     white-space: normal;
+    overflow-wrap: break-word;
   }
 
   [class^="mt-8"] {
@@ -357,7 +361,7 @@ table {
     margin-bottom: 20px !important;
     padding-bottom: 10px !important;
   }
-  
+
   .signature-column {
     width: 120px !important;
   }
@@ -395,7 +399,7 @@ table {
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 .left-column {
@@ -422,4 +426,28 @@ table {
   border-collapse: collapse;
   margin-bottom: 20px;
   table-layout: fixed;
+}
+
+/* Floating sticky print button styling */
+.fixed-print-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .fixed-print-button {
+    display: block;
+  }
+}
+
+/* Make sure the print-table handles column widths properly */
+.print-table colgroup {
+  display: table-column-group;
+}
+
+.print-table col {
+  display: table-column;
 }
