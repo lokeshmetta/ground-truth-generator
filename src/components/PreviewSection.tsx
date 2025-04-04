@@ -369,16 +369,23 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         description: "Please wait while we generate your PDF...",
       });
 
-      // Load the Telugu font
+      // Create a new jsPDF instance with A4 size
       const doc = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
       });
 
-      // Add Telugu font support
-      doc.addFont("https://cdn.jsdelivr.net/npm/noto-sans-telugu-web@1.0.2/fonts/NotoSansTelugu-Regular.ttf", "NotoSansTelugu", "normal");
-      doc.setFont("NotoSansTelugu");
+      // Try to load the Telugu font
+      try {
+        // Define a font that supports Telugu characters
+        doc.addFont("/fonts/NotoSansTelugu-Regular.ttf", "NotoSansTelugu", "normal");
+        doc.setFont("NotoSansTelugu");
+      } catch (fontError) {
+        console.error("Error loading Telugu font:", fontError);
+        // Fallback to default font
+        doc.setFont("helvetica");
+      }
       
       // Set text color to black
       doc.setTextColor(0, 0, 0);
@@ -387,119 +394,119 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       const margin = 15; // mm
       const pageWidth = doc.internal.pageSize.getWidth();
       const contentWidth = pageWidth - (2 * margin);
-      let y = margin;
       
       // Process each notice
       for (let i = 0; i < notices.length; i++) {
+        const notice = notices[i];
+        
         if (i > 0) {
           doc.addPage();
-          y = margin;
         }
+        
+        let y = margin; // Starting y position
         
         // Add header text
         doc.setFontSize(14);
-        const headerText1 = "ఫారం-19";
-        const headerText2 = "భూ యాజమాన్య దారులకు నోటీసు";
-        const headerText3 = "భూ నిజ నిర్దారణ కొరకు";
-        
-        const headerWidth1 = doc.getStringUnitWidth(headerText1) * 14 / doc.internal.scaleFactor;
-        const headerWidth2 = doc.getStringUnitWidth(headerText2) * 14 / doc.internal.scaleFactor;
-        const headerWidth3 = doc.getStringUnitWidth(headerText3) * 14 / doc.internal.scaleFactor;
-        
-        doc.text(headerText1, (pageWidth - headerWidth1) / 2, y);
+        doc.text("ఫారం-19", pageWidth / 2, y, { align: "center" });
         y += 8;
-        doc.text(headerText2, (pageWidth - headerWidth2) / 2, y);
+        doc.text("భూ యాజమాన్య దారులకు నోటీసు", pageWidth / 2, y, { align: "center" });
         y += 8;
-        doc.text(headerText3, (pageWidth - headerWidth3) / 2, y);
+        doc.text("భూ నిజ నిర్దారణ కొరకు", pageWidth / 2, y, { align: "center" });
         y += 12;
         
-        // Add content text (first paragraph)
-        doc.setFontSize(12);
+        // Add content paragraphs
+        doc.setFontSize(11);
         const paragraph1 = `1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ RC నెం. ${notificationNumber || "6(i)"}, అనుసరించి, ${districtName || "____________________"} జిల్లా, ${mandalName || "_____________________"} మండలం, ${villageName || "____________________"} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు ${formatDate(startDate) || "_____________"} తేదీన ${formatTime(startTime) || "________"} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.`;
         
-        // Split text into multiple lines that fit within the page width
-        const splitText1 = doc.splitTextToSize(paragraph1, contentWidth);
-        doc.text(splitText1, margin, y);
-        y += splitText1.length * 7;
+        const splitLines1 = doc.splitTextToSize(paragraph1, contentWidth);
+        doc.text(splitLines1, margin, y);
+        y += splitLines1.length * 6;
         
-        // Add content text (second paragraph)
         const paragraph2 = "2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు అందించవలసినదిగా తెలియజేయడమైనది.";
         
-        const splitText2 = doc.splitTextToSize(paragraph2, contentWidth);
-        doc.text(splitText2, margin, y);
-        y += splitText2.length * 7 + 5;
+        const splitLines2 = doc.splitTextToSize(paragraph2, contentWidth);
+        doc.text(splitLines2, margin, y);
+        y += splitLines2.length * 6 + 6;
         
-        // Create table
-        const notice = notices[i];
-        const tableCols = notice.fields.length + 1; // +1 for signature column
-        const colWidth = contentWidth / tableCols;
+        // Draw table
+        const tableColumns = notice.fields.length + 1; // +1 for signature column
+        const cellWidth = contentWidth / tableColumns;
+        const cellHeight = 10;
         
-        // Draw table headers
+        // Table headers
         doc.setFillColor(240, 240, 240);
-        doc.rect(margin, y, contentWidth, 10, 'F');
+        doc.rect(margin, y, contentWidth, cellHeight, "F");
         doc.setDrawColor(0);
-        doc.rect(margin, y, contentWidth, 10, 'S');
+        doc.rect(margin, y, contentWidth, cellHeight, "S");
         
-        // Vertical lines for header
-        for (let c = 1; c < tableCols; c++) {
-          doc.line(margin + (c * colWidth), y, margin + (c * colWidth), y + 10);
+        // Draw vertical lines for headers
+        for (let c = 1; c < tableColumns; c++) {
+          doc.line(
+            margin + c * cellWidth,
+            y,
+            margin + c * cellWidth,
+            y + cellHeight
+          );
         }
         
-        // Header text
+        // Add header text
         doc.setFontSize(10);
-        let xPos = margin;
-        for (const field of notice.fields) {
-          doc.text(field.te, xPos + colWidth/2, y + 6, { align: 'center' });
-          xPos += colWidth;
-        }
-        doc.text("సంతకం", xPos + colWidth/2, y + 6, { align: 'center' });
+        let xPos = margin + cellWidth / 2;
+        notice.fields.forEach(field => {
+          doc.text(field.te, xPos, y + 6, { align: "center" });
+          xPos += cellWidth;
+        });
+        doc.text("సంతకం", xPos, y + 6, { align: "center" });
+        y += cellHeight;
         
-        y += 10;
-        
-        // Draw table body
-        const rowHeight = 10;
+        // Table rows
         for (const row of notice.rows) {
-          // Draw row background
-          doc.setFillColor(255, 255, 255);
-          doc.rect(margin, y, contentWidth, rowHeight, 'F');
-          doc.setDrawColor(0);
-          doc.rect(margin, y, contentWidth, rowHeight, 'S');
-          
-          // Vertical lines for row
-          for (let c = 1; c < tableCols; c++) {
-            doc.line(margin + (c * colWidth), y, margin + (c * colWidth), y + rowHeight);
-          }
-          
-          // Row content
-          xPos = margin;
-          for (const field of notice.fields) {
-            const value = row[notice.mapping[field.en]] || '';
-            doc.text(value, xPos + colWidth/2, y + 6, { align: 'center' });
-            xPos += colWidth;
-          }
-          
-          y += rowHeight;
-          
-          // Check if we need a new page for the next row
+          // Check if we need a new page
           if (y > doc.internal.pageSize.getHeight() - 30) {
             doc.addPage();
             y = margin;
           }
+          
+          // Draw row background and border
+          doc.setFillColor(255, 255, 255);
+          doc.rect(margin, y, contentWidth, cellHeight, "F");
+          doc.setDrawColor(0);
+          doc.rect(margin, y, contentWidth, cellHeight, "S");
+          
+          // Draw vertical lines for cells
+          for (let c = 1; c < tableColumns; c++) {
+            doc.line(
+              margin + c * cellWidth,
+              y,
+              margin + c * cellWidth,
+              y + cellHeight
+            );
+          }
+          
+          // Add row data
+          xPos = margin + cellWidth / 2;
+          notice.fields.forEach(field => {
+            const value = row[notice.mapping[field.en]] || "";
+            doc.text(value, xPos, y + 6, { align: "center" });
+            xPos += cellWidth;
+          });
+          
+          y += cellHeight;
         }
         
-        y += 10;
+        y += 8;
         
         // Add third point
-        const paragraph3 = "3) నోటీసు యొక్క ప్రతిని సంతకం చేసి తిరిగి పంపించవలెను";
-        doc.text(paragraph3, margin, y);
-        y += 15;
+        doc.text("3) నోటీసు యొక్క ప్రతిని సంతకం చేసి తిరిగి పంపించవలెను", margin, y);
+        y += 12;
         
         // Add footer
         doc.text(`స్తలం: ${villageName || "_____________"}`, margin, y);
-        doc.text("తేది: _____________", margin, y + 7);
+        doc.text("తేది: _____________", margin, y + 6);
         doc.text("గ్రామ సర్వేయర్ సంతకం", pageWidth - margin - 40, y);
       }
       
+      // Save the PDF
       doc.save(`land-notices-${villageName || "village"}.pdf`);
       
       toast({
