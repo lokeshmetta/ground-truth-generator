@@ -92,33 +92,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     ];
   }
 
-  const prepareForPDF = () => {
-    if (!printRef.current) return;
-
-    // Clone the printRef content for PDF preparation
-    const pdfContent = printRef.current.cloneNode(true) as HTMLElement;
-
-    // Add print-specific classes to make it look like print mode
-    const noticeElements = pdfContent.querySelectorAll(".khata-group");
-    noticeElements.forEach((notice) => {
-      // Show the Telugu header in the PDF
-      const headerElement = notice.querySelector(".telugu-header-print");
-      if (headerElement) {
-        headerElement.classList.remove("hidden-on-web");
-      }
-    });
-
-    // Create a temporary container to append our clone to
-    const tempContainer = document.createElement("div");
-    tempContainer.appendChild(pdfContent);
-    tempContainer.style.position = "absolute";
-    tempContainer.style.left = "-9999px";
-    tempContainer.style.width = "210mm"; // A4 width
-    document.body.appendChild(tempContainer);
-
-    return { tempContainer, pdfContent };
-  };
-
   const formatTime = (timeString: string): string => {
     if (!timeString) return "";
 
@@ -156,10 +129,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
   const handleDownloadWord = async () => {
     try {
-      // Create a new HTML document for Word conversion
       const wordContent = document.createElement("div");
 
-      // Add styles for Word document with Gautami font
       const style = document.createElement("style");
       style.textContent = `
         @font-face {
@@ -236,12 +207,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       `;
       wordContent.appendChild(style);
 
-      // Process each notice
       notices.forEach((notice, index) => {
         const noticeDiv = document.createElement("div");
         noticeDiv.className = "notice-section telugu-text";
 
-        // Add header at the very top of the page
         const header = document.createElement("div");
         header.className = "header telugu-text";
         header.style.marginTop = "0";
@@ -253,7 +222,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         `;
         noticeDiv.appendChild(header);
 
-        // Add content
         const content = document.createElement("div");
         content.className = "content telugu-text";
         content.innerHTML = `
@@ -272,28 +240,24 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         `;
         noticeDiv.appendChild(content);
 
-        // Create table with colgroup for fixed column widths
         const table = document.createElement("table");
         const colgroup = document.createElement("colgroup");
 
-        // Set column widths
         notice.fields.forEach((field, i) => {
           const col = document.createElement("col");
-          if (i === 0) col.style.width = "90px"; // Survey No
-          else if (i === 1) col.style.width = "80px"; // Khata No
-          else if (i === 4) col.style.width = "110px"; // Mobile Number
-          else col.style.width = "auto"; // Other columns share remaining space
+          if (i === 0) col.style.width = "90px";
+          else if (i === 1) col.style.width = "80px";
+          else if (i === 4) col.style.width = "110px";
+          else col.style.width = "auto";
           colgroup.appendChild(col);
         });
 
-        // Add signature column
         const signatureCol = document.createElement("col");
         signatureCol.style.width = "120px";
         colgroup.appendChild(signatureCol);
 
         table.appendChild(colgroup);
 
-        // Add table header
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
 
@@ -312,7 +276,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // Add table body
         const tbody = document.createElement("tbody");
 
         notice.rows.forEach((row) => {
@@ -333,7 +296,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
         table.appendChild(tbody);
         noticeDiv.appendChild(table);
-        // Add notice number with proper styling
+
         const noticeNumber = document.createElement("p");
 
         noticeNumber.className = "thirdpoint telugu-text";
@@ -342,12 +305,11 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           '<p style="font-size: 12pt; font-family: Gautami, "Noto Sans Telugu", sans-serif; line-height: 1.5;">3) నోటీసు యొక్క ప్రతిని సంతకం చేసి తిరిగి పంపించవలెను</p>';
         noticeDiv.appendChild(noticeNumber);
 
-        // Add footer
         const footer = document.createElement("div");
         footer.className = "footer telugu-text";
         footer.style.marginTop = "10px";
         footer.innerHTML = `
-        <div class="right-footer">
+          <div class="right-footer">
             <p>గ్రామ సర్వేయర్ సంతకం</p>
           </div>
           <div class="left-footer">
@@ -362,7 +324,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         wordContent.appendChild(noticeDiv);
       });
 
-      // Convert to Blob - use HTML format for better rendering in Word
       const htmlContent = `
         <!DOCTYPE html>
         <html>
@@ -378,12 +339,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
       const blob = new Blob([htmlContent], { type: "application/msword" });
 
-      // Create download link
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = `land-notices-${villageName || "village"}.doc`;
 
-      // Trigger download
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -410,77 +369,64 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         description: "Please wait while we generate your PDF...",
       });
       
-      // Create a new jsPDF instance
+      if (!printRef.current) {
+        throw new Error("Print reference not found");
+      }
+      
+      const pdfContainer = document.createElement("div");
+      pdfContainer.className = "pdf-container";
+      pdfContainer.style.position = "absolute";
+      pdfContainer.style.left = "-9999px";
+      pdfContainer.style.width = "210mm";
+      pdfContainer.style.fontFamily = "'Gautami', 'Noto Sans Telugu', sans-serif";
+      
+      const contentClone = printRef.current.cloneNode(true) as HTMLElement;
+      
+      const teluguHeaders = contentClone.querySelectorAll(".telugu-header-print");
+      teluguHeaders.forEach(header => {
+        if (header.classList.contains("hidden-on-web")) {
+          header.classList.remove("hidden-on-web");
+        }
+      });
+      
+      pdfContainer.appendChild(contentClone);
+      document.body.appendChild(pdfContainer);
+      
+      const noticeGroups = pdfContainer.querySelectorAll(".khata-group");
       const doc = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
       });
       
-      // Set font to support Telugu characters
-      // We'll use the default font as jsPDF doesn't natively support Telugu fonts
-      // The approach will be to capture the rendered HTML with proper fonts
-      
-      if (!printRef.current) {
-        throw new Error("Print reference not found");
-      }
-      
-      // Create a deep clone of the content to modify for PDF
-      const contentDiv = document.createElement("div");
-      contentDiv.innerHTML = printRef.current.innerHTML;
-      
-      // Make Telugu headers visible in PDF
-      const headers = contentDiv.querySelectorAll(".telugu-header-print");
-      headers.forEach(header => {
-        if (header.classList.contains("hidden-on-web")) {
-          header.classList.remove("hidden-on-web");
-        }
-      });
-      
-      // Set styles for PDF rendering
-      contentDiv.style.width = "210mm";
-      contentDiv.style.padding = "10mm";
-      contentDiv.style.fontFamily = "'Gautami', 'Noto Sans Telugu', sans-serif";
-      
-      // Temporarily add to DOM for rendering
-      contentDiv.style.position = "absolute";
-      contentDiv.style.left = "-9999px";
-      document.body.appendChild(contentDiv);
-      
-      // Process each notice as a separate page
-      const noticeElements = contentDiv.querySelectorAll(".khata-group");
-      
-      // Using Promise.all to wait for all canvas renderings
-      await Promise.all(Array.from(noticeElements).map(async (notice, index) => {
-        // Create a container for each notice
-        const noticeContainer = document.createElement("div");
-        noticeContainer.appendChild(notice.cloneNode(true));
-        noticeContainer.style.width = "210mm";
-        noticeContainer.style.height = "297mm";
-        noticeContainer.style.padding = "10mm";
-        noticeContainer.style.position = "absolute";
-        noticeContainer.style.left = "-8888px"; // Different position to avoid conflicts
-        document.body.appendChild(noticeContainer);
+      for (let i = 0; i < noticeGroups.length; i++) {
+        const singleNoticeContainer = document.createElement("div");
+        singleNoticeContainer.className = "pdf-page-container";
+        singleNoticeContainer.style.width = "210mm";
+        singleNoticeContainer.style.padding = "10mm";
+        singleNoticeContainer.style.position = "absolute";
+        singleNoticeContainer.style.left = "-8888px";
+        singleNoticeContainer.style.backgroundColor = "white";
         
-        // Render to canvas
-        const canvas = await html2canvas(noticeContainer, {
-          scale: 2, // Higher quality
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          windowWidth: noticeContainer.scrollWidth,
-          windowHeight: noticeContainer.scrollHeight,
-        });
+        const noticeClone = noticeGroups[i].cloneNode(true) as HTMLElement;
+        singleNoticeContainer.appendChild(noticeClone);
+        document.body.appendChild(singleNoticeContainer);
         
-        // Add new page if not the first page
-        if (index > 0) {
+        if (i > 0) {
           doc.addPage();
         }
         
-        // Convert canvas to image
-        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const canvas = await html2canvas(singleNoticeContainer, {
+          scale: 1.5,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          windowWidth: singleNoticeContainer.scrollWidth,
+          windowHeight: singleNoticeContainer.scrollHeight,
+        });
         
-        // Add to PDF - calculate ratios to fit A4
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        
         const imgProps = doc.getImageProperties(imgData);
         const pdfWidth = doc.internal.pageSize.getWidth();
         const pdfHeight = doc.internal.pageSize.getHeight();
@@ -489,23 +435,23 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           pdfHeight / imgProps.height
         );
         
+        const x = (pdfWidth - imgProps.width * ratio) / 2;
+        const y = 0;
+        
         doc.addImage(
           imgData,
           "JPEG",
-          0,
-          0,
+          x,
+          y,
           imgProps.width * ratio,
           imgProps.height * ratio
         );
         
-        // Clean up
-        document.body.removeChild(noticeContainer);
-      }));
+        document.body.removeChild(singleNoticeContainer);
+      }
       
-      // Clean up the main content div
-      document.body.removeChild(contentDiv);
+      document.body.removeChild(pdfContainer);
       
-      // Save the PDF
       doc.save(`land-notices-${villageName || "village"}.pdf`);
       
       toast({
