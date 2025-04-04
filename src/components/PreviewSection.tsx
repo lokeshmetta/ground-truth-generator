@@ -1,3 +1,4 @@
+
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -6,7 +7,6 @@ import { Download, FileText } from "lucide-react";
 import PrintableNotice from "./PrintableNotice";
 import { toast } from "@/components/ui/use-toast";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 
 interface PreviewSectionProps {
   districtName: string;
@@ -368,95 +368,143 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         title: "Preparing PDF",
         description: "Please wait while we generate your PDF...",
       });
-      
-      if (!printRef.current) {
-        throw new Error("Print reference not found");
-      }
-      
-      const pdfContainer = document.createElement("div");
-      pdfContainer.className = "pdf-container";
-      pdfContainer.style.position = "absolute";
-      pdfContainer.style.left = "-9999px";
-      pdfContainer.style.width = "210mm";
-      pdfContainer.style.fontFamily = "'Gautami', 'Noto Sans Telugu', sans-serif";
-      
-      const contentClone = printRef.current.cloneNode(true) as HTMLElement;
-      
-      const teluguHeaders = contentClone.querySelectorAll(".telugu-header-print");
-      teluguHeaders.forEach(header => {
-        if (header.classList.contains("hidden-on-web")) {
-          header.classList.remove("hidden-on-web");
-        }
-      });
-      
-      pdfContainer.appendChild(contentClone);
-      document.body.appendChild(pdfContainer);
-      
-      const noticeGroups = pdfContainer.querySelectorAll(".khata-group");
+
+      // Load the Telugu font
       const doc = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
       });
+
+      // Add Telugu font support
+      doc.addFont("https://cdn.jsdelivr.net/npm/noto-sans-telugu-web@1.0.2/fonts/NotoSansTelugu-Regular.ttf", "NotoSansTelugu", "normal");
+      doc.setFont("NotoSansTelugu");
       
-      for (let i = 0; i < noticeGroups.length; i++) {
-        const singleNoticeContainer = document.createElement("div");
-        singleNoticeContainer.className = "pdf-page-container";
-        singleNoticeContainer.style.width = "210mm";
-        singleNoticeContainer.style.padding = "10mm";
-        singleNoticeContainer.style.position = "absolute";
-        singleNoticeContainer.style.left = "-8888px";
-        singleNoticeContainer.style.backgroundColor = "white";
-        
-        const noticeClone = noticeGroups[i].cloneNode(true) as HTMLElement;
-        singleNoticeContainer.appendChild(noticeClone);
-        document.body.appendChild(singleNoticeContainer);
-        
+      // Set text color to black
+      doc.setTextColor(0, 0, 0);
+      
+      // Define page margins
+      const margin = 15; // mm
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const contentWidth = pageWidth - (2 * margin);
+      let y = margin;
+      
+      // Process each notice
+      for (let i = 0; i < notices.length; i++) {
         if (i > 0) {
           doc.addPage();
+          y = margin;
         }
         
-        const canvas = await html2canvas(singleNoticeContainer, {
-          scale: 1.5,
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          logging: false,
-          windowWidth: singleNoticeContainer.scrollWidth,
-          windowHeight: singleNoticeContainer.scrollHeight,
-        });
+        // Add header text
+        doc.setFontSize(14);
+        const headerText1 = "ఫారం-19";
+        const headerText2 = "భూ యాజమాన్య దారులకు నోటీసు";
+        const headerText3 = "భూ నిజ నిర్దారణ కొరకు";
         
-        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        const headerWidth1 = doc.getStringUnitWidth(headerText1) * 14 / doc.internal.scaleFactor;
+        const headerWidth2 = doc.getStringUnitWidth(headerText2) * 14 / doc.internal.scaleFactor;
+        const headerWidth3 = doc.getStringUnitWidth(headerText3) * 14 / doc.internal.scaleFactor;
         
-        const imgProps = doc.getImageProperties(imgData);
-        const pdfWidth = doc.internal.pageSize.getWidth();
-        const pdfHeight = doc.internal.pageSize.getHeight();
-        const ratio = Math.min(
-          pdfWidth / imgProps.width,
-          pdfHeight / imgProps.height
-        );
+        doc.text(headerText1, (pageWidth - headerWidth1) / 2, y);
+        y += 8;
+        doc.text(headerText2, (pageWidth - headerWidth2) / 2, y);
+        y += 8;
+        doc.text(headerText3, (pageWidth - headerWidth3) / 2, y);
+        y += 12;
         
-        const x = (pdfWidth - imgProps.width * ratio) / 2;
-        const y = 0;
+        // Add content text (first paragraph)
+        doc.setFontSize(12);
+        const paragraph1 = `1) సర్వే సహాయక సంచాలకులు Assistant Director వారి నోటిఫికేషన్ RC నెం. ${notificationNumber || "6(i)"}, అనుసరించి, ${districtName || "____________________"} జిల్లా, ${mandalName || "_____________________"} మండలం, ${villageName || "____________________"} గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు ${formatDate(startDate) || "_____________"} తేదీన ${formatTime(startTime) || "________"} గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.`;
         
-        doc.addImage(
-          imgData,
-          "JPEG",
-          x,
-          y,
-          imgProps.width * ratio,
-          imgProps.height * ratio
-        );
+        // Split text into multiple lines that fit within the page width
+        const splitText1 = doc.splitTextToSize(paragraph1, contentWidth);
+        doc.text(splitText1, margin, y);
+        y += splitText1.length * 7;
         
-        document.body.removeChild(singleNoticeContainer);
+        // Add content text (second paragraph)
+        const paragraph2 = "2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ యజమానులు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు అందించవలసినదిగా తెలియజేయడమైనది.";
+        
+        const splitText2 = doc.splitTextToSize(paragraph2, contentWidth);
+        doc.text(splitText2, margin, y);
+        y += splitText2.length * 7 + 5;
+        
+        // Create table
+        const notice = notices[i];
+        const tableCols = notice.fields.length + 1; // +1 for signature column
+        const colWidth = contentWidth / tableCols;
+        
+        // Draw table headers
+        doc.setFillColor(240, 240, 240);
+        doc.rect(margin, y, contentWidth, 10, 'F');
+        doc.setDrawColor(0);
+        doc.rect(margin, y, contentWidth, 10, 'S');
+        
+        // Vertical lines for header
+        for (let c = 1; c < tableCols; c++) {
+          doc.line(margin + (c * colWidth), y, margin + (c * colWidth), y + 10);
+        }
+        
+        // Header text
+        doc.setFontSize(10);
+        let xPos = margin;
+        for (const field of notice.fields) {
+          doc.text(field.te, xPos + colWidth/2, y + 6, { align: 'center' });
+          xPos += colWidth;
+        }
+        doc.text("సంతకం", xPos + colWidth/2, y + 6, { align: 'center' });
+        
+        y += 10;
+        
+        // Draw table body
+        const rowHeight = 10;
+        for (const row of notice.rows) {
+          // Draw row background
+          doc.setFillColor(255, 255, 255);
+          doc.rect(margin, y, contentWidth, rowHeight, 'F');
+          doc.setDrawColor(0);
+          doc.rect(margin, y, contentWidth, rowHeight, 'S');
+          
+          // Vertical lines for row
+          for (let c = 1; c < tableCols; c++) {
+            doc.line(margin + (c * colWidth), y, margin + (c * colWidth), y + rowHeight);
+          }
+          
+          // Row content
+          xPos = margin;
+          for (const field of notice.fields) {
+            const value = row[notice.mapping[field.en]] || '';
+            doc.text(value, xPos + colWidth/2, y + 6, { align: 'center' });
+            xPos += colWidth;
+          }
+          
+          y += rowHeight;
+          
+          // Check if we need a new page for the next row
+          if (y > doc.internal.pageSize.getHeight() - 30) {
+            doc.addPage();
+            y = margin;
+          }
+        }
+        
+        y += 10;
+        
+        // Add third point
+        const paragraph3 = "3) నోటీసు యొక్క ప్రతిని సంతకం చేసి తిరిగి పంపించవలెను";
+        doc.text(paragraph3, margin, y);
+        y += 15;
+        
+        // Add footer
+        doc.text(`స్తలం: ${villageName || "_____________"}`, margin, y);
+        doc.text("తేది: _____________", margin, y + 7);
+        doc.text("గ్రామ సర్వేయర్ సంతకం", pageWidth - margin - 40, y);
       }
-      
-      document.body.removeChild(pdfContainer);
       
       doc.save(`land-notices-${villageName || "village"}.pdf`);
       
       toast({
         title: "PDF Downloaded Successfully",
-        description: "Land notices have been saved as a PDF document.",
+        description: "Land notices have been saved as a PDF document with selectable text.",
       });
     } catch (error) {
       console.error("Error generating PDF:", error);
