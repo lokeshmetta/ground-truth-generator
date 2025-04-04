@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -136,6 +137,16 @@ table {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+}
+
+/* Animation for menu */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 /* Mobile specific fixes */
@@ -450,4 +461,24 @@ table {
 
 .print-table col {
   display: table-column;
+}
+
+/* PDF-specific styles */
+.for-pdf-only {
+  display: none;
+}
+
+@media print {
+  .for-pdf-only {
+    display: block;
+  }
+}
+
+/* PDF container styles */
+.pdf-container {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 10mm;
+  margin: 0 auto;
+  background-color: white;
 }

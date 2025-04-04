@@ -2,9 +2,11 @@ import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import PrintableNotice from "./PrintableNotice";
 import { toast } from "@/components/ui/use-toast";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 interface PreviewSectionProps {
   districtName: string;
@@ -401,6 +403,125 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     }
   };
 
+  const handleDownloadPDF = async () => {
+    try {
+      toast({
+        title: "Preparing PDF",
+        description: "Please wait while we generate your PDF...",
+      });
+      
+      // Create a new jsPDF instance
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+      
+      // Set font to support Telugu characters
+      // We'll use the default font as jsPDF doesn't natively support Telugu fonts
+      // The approach will be to capture the rendered HTML with proper fonts
+      
+      if (!printRef.current) {
+        throw new Error("Print reference not found");
+      }
+      
+      // Create a deep clone of the content to modify for PDF
+      const contentDiv = document.createElement("div");
+      contentDiv.innerHTML = printRef.current.innerHTML;
+      
+      // Make Telugu headers visible in PDF
+      const headers = contentDiv.querySelectorAll(".telugu-header-print");
+      headers.forEach(header => {
+        if (header.classList.contains("hidden-on-web")) {
+          header.classList.remove("hidden-on-web");
+        }
+      });
+      
+      // Set styles for PDF rendering
+      contentDiv.style.width = "210mm";
+      contentDiv.style.padding = "10mm";
+      contentDiv.style.fontFamily = "'Gautami', 'Noto Sans Telugu', sans-serif";
+      
+      // Temporarily add to DOM for rendering
+      contentDiv.style.position = "absolute";
+      contentDiv.style.left = "-9999px";
+      document.body.appendChild(contentDiv);
+      
+      // Process each notice as a separate page
+      const noticeElements = contentDiv.querySelectorAll(".khata-group");
+      
+      // Using Promise.all to wait for all canvas renderings
+      await Promise.all(Array.from(noticeElements).map(async (notice, index) => {
+        // Create a container for each notice
+        const noticeContainer = document.createElement("div");
+        noticeContainer.appendChild(notice.cloneNode(true));
+        noticeContainer.style.width = "210mm";
+        noticeContainer.style.height = "297mm";
+        noticeContainer.style.padding = "10mm";
+        noticeContainer.style.position = "absolute";
+        noticeContainer.style.left = "-8888px"; // Different position to avoid conflicts
+        document.body.appendChild(noticeContainer);
+        
+        // Render to canvas
+        const canvas = await html2canvas(noticeContainer, {
+          scale: 2, // Higher quality
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          windowWidth: noticeContainer.scrollWidth,
+          windowHeight: noticeContainer.scrollHeight,
+        });
+        
+        // Add new page if not the first page
+        if (index > 0) {
+          doc.addPage();
+        }
+        
+        // Convert canvas to image
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        
+        // Add to PDF - calculate ratios to fit A4
+        const imgProps = doc.getImageProperties(imgData);
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = doc.internal.pageSize.getHeight();
+        const ratio = Math.min(
+          pdfWidth / imgProps.width,
+          pdfHeight / imgProps.height
+        );
+        
+        doc.addImage(
+          imgData,
+          "JPEG",
+          0,
+          0,
+          imgProps.width * ratio,
+          imgProps.height * ratio
+        );
+        
+        // Clean up
+        document.body.removeChild(noticeContainer);
+      }));
+      
+      // Clean up the main content div
+      document.body.removeChild(contentDiv);
+      
+      // Save the PDF
+      doc.save(`land-notices-${villageName || "village"}.pdf`);
+      
+      toast({
+        title: "PDF Downloaded Successfully",
+        description: "Land notices have been saved as a PDF document.",
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "PDF Generation Failed",
+        description: "There was an error creating the PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -410,7 +531,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     >
       <div className="no-print flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-2xl font-medium">Preview</h2>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <Button
             onClick={handleDownloadWord}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded"
@@ -419,6 +540,15 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           >
             <Download className="h-4 w-4" />
             Download Word
+          </Button>
+          <Button
+            onClick={handleDownloadPDF}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded"
+            variant="secondary"
+            size="sm"
+          >
+            <FileText className="h-4 w-4" />
+            Download PDF
           </Button>
         </div>
       </div>

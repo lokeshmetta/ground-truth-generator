@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
@@ -6,7 +7,7 @@ import MappingTable from "@/components/MappingTable";
 import PreviewSection from "@/components/PreviewSection";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
+import { Printer, Download, FileText } from "lucide-react";
 
 const Index: React.FC = () => {
   // Form state
@@ -25,6 +26,7 @@ const Index: React.FC = () => {
   // Mapping and preview state
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [showPreview, setShowPreview] = useState(false);
+  const [showActionMenu, setShowActionMenu] = useState(false);
 
   const handleFileUpload = (headers: string[], data: string[][]) => {
     setHeaders(headers);
@@ -105,12 +107,55 @@ const Index: React.FC = () => {
 
       {showPreview && (
         <div className="fixed bottom-8 right-8 print:hidden z-50">
+          {showActionMenu ? (
+            <div className="flex flex-col gap-2 mb-2 animate-fade-in">
+              <Button
+                onClick={() => {
+                  const previewSection = document.querySelector('.preview-section');
+                  const downloadWordButton = previewSection?.querySelector('button:nth-child(1)');
+                  if (downloadWordButton) {
+                    (downloadWordButton as HTMLButtonElement).click();
+                  }
+                  setShowActionMenu(false);
+                }}
+                className="shadow-lg bg-blue-600 hover:bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center"
+                size="icon"
+              >
+                <Download className="h-5 w-5" />
+              </Button>
+              <Button
+                onClick={() => {
+                  const previewSection = document.querySelector('.preview-section');
+                  const downloadPDFButton = previewSection?.querySelector('button:nth-child(2)');
+                  if (downloadPDFButton) {
+                    (downloadPDFButton as HTMLButtonElement).click();
+                  }
+                  setShowActionMenu(false);
+                }}
+                className="shadow-lg bg-green-600 hover:bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center"
+                size="icon"
+              >
+                <FileText className="h-5 w-5" />
+              </Button>
+              <Button
+                onClick={handlePrint}
+                className="shadow-lg bg-primary hover:bg-primary/90 text-white rounded-full h-12 w-12 flex items-center justify-center"
+                size="icon"
+              >
+                <Printer className="h-5 w-5" />
+              </Button>
+            </div>
+          ) : null}
           <Button
-            onClick={handlePrint}
+            onClick={() => setShowActionMenu(!showActionMenu)}
             className="flex items-center gap-2 shadow-lg bg-primary hover:bg-primary/90 text-white rounded-full w-14 h-14 justify-center"
             size="icon"
           >
-            <Printer className="h-6 w-6" />
+            {showActionMenu ? (
+              <span className="text-xl">×</span>
+            ) : (
+              <Printer className="h-6 w-6" />
+            )}
           </Button>
         </div>
       )}
